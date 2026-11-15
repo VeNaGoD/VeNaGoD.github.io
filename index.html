@@ -1,0 +1,1998 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Portrait Culturel</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts : Space Grotesk (Titres) & Plus Jakarta Sans (Textes) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* ===================================================================== */
+        /* CONFIGURATION GLOBALE — COULEURS UNIES STRICTES (ZÉRO DÉGRADÉ)        */
+        /* ===================================================================== */
+        :root {
+            --font-display: 'Space Grotesk', sans-serif;
+            --font-sans: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: #F8FAFC;
+            background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23CBD5E1'/%3E%3C/svg%3E");
+            color: #0F172A;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, .font-display {
+            font-family: var(--font-display);
+        }
+
+        /* ===================================================================== */
+        /* BARRES D'ÉGALISEUR DU LECTEUR AUDIO                                   */
+        /* ===================================================================== */
+        @keyframes eqBounce {
+            0%, 100% {
+                height: 4px;
+            }
+            50% {
+                height: 14px;
+            }
+        }
+
+        .eq-bar {
+            width: 3px;
+            height: 4px;
+            border-radius: 9999px;
+            background-color: #1E40AF;
+            transition: height 0.2s ease, background-color 0.2s ease;
+        }
+
+        .is-playing .eq-bar {
+            background-color: #047857;
+            animation: eqBounce 0.85s ease-in-out infinite;
+        }
+
+        .is-playing .eq-bar:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .is-playing .eq-bar:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        .is-playing .eq-bar:nth-child(4) {
+            animation-delay: 0.15s;
+        }
+
+        /* Curseur de volume personnalisé (couleur unie) */
+        input[type="range"].volume-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 5px;
+            border-radius: 9999px;
+            background-color: #CBD5E1;
+            outline: none;
+            cursor: pointer;
+        }
+
+        input[type="range"].volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 13px;
+            height: 13px;
+            border-radius: 9999px;
+            background-color: #1E40AF;
+            cursor: pointer;
+        }
+
+        input[type="range"].volume-slider::-moz-range-thumb {
+            width: 13px;
+            height: 13px;
+            border: none;
+            border-radius: 9999px;
+            background-color: #1E40AF;
+            cursor: pointer;
+        }
+
+        /* ===================================================================== */
+        /* ANIMATION DE FLOTTEMENT DOUX DES BULLES                               */
+        /* ===================================================================== */
+        @keyframes floatPeripheral {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-7px);
+            }
+        }
+
+        @keyframes floatCenter {
+            0%, 100% {
+                transform: translate(-50%, -50%);
+            }
+            50% {
+                transform: translate(-50%, calc(-50% - 7px));
+            }
+        }
+
+        /* ===================================================================== */
+        /* DISPOSITION DES 5 BULLES : 1 CENTRALE + 4 PÉRIPHÉRIQUES CHEVAUCHANTES  */
+        /* ===================================================================== */
+        .cluster-stage {
+            min-height: calc(100vh - 76px);
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem 1rem 2.5rem 1rem;
+        }
+
+        /* Mobile / Petit écran (< 820px) : empilement vertical avec chevauchement */
+        .bubbles-cluster {
+            position: relative;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .culture-bubble {
+            width: min(315px, 86vw);
+            height: min(315px, 86vw);
+            border-radius: 9999px;
+            border: 6px solid rgba(255, 255, 255, 0.92);
+            box-shadow: 0 24px 56px rgba(15, 23, 42, 0.22), inset 0 0 0 8px rgba(255, 255, 255, 0.14);
+            color: #FFFFFF;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 1.85rem;
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+            transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+        }
+
+        /* Anneau intérieur décoratif fin */
+        .culture-bubble::before {
+            content: '';
+            position: absolute;
+            inset: 14px;
+            border-radius: 9999px;
+            border: 1.5px solid rgba(255, 255, 255, 0.3);
+            pointer-events: none;
+            transition: inset 0.35s ease, border-color 0.35s ease;
+        }
+
+        /* Chevauchement vertical sur mobile */
+        .culture-bubble + .culture-bubble {
+            margin-top: -36px;
+        }
+
+        .culture-bubble:hover {
+            z-index: 30 !important;
+            animation-play-state: paused !important;
+            transform: scale(1.06);
+            border-color: #FFFFFF;
+            box-shadow: 0 32px 72px rgba(15, 23, 42, 0.34), inset 0 0 0 10px rgba(255, 255, 255, 0.22);
+        }
+
+        .culture-bubble:hover::before {
+            inset: 12px;
+            border-color: rgba(255, 255, 255, 0.58);
+        }
+
+        .culture-bubble:hover .explore-pill {
+            background-color: #FFFFFF;
+            color: #0F172A;
+        }
+
+        .culture-bubble:active {
+            transform: scale(1.02);
+        }
+
+        /* Desktop (>= 820px) : 1 grande bulle centrale + 4 bulles aux coins occupant l'écran */
+        @media (min-width: 820px) {
+            .cluster-stage {
+                height: calc(100vh - 76px);
+                padding: 0.75rem 1.25rem;
+                overflow: hidden;
+            }
+
+            .bubbles-cluster {
+                display: block;
+                width: 100%;
+                max-width: 1140px;
+                height: 100%;
+                margin: 0 auto;
+            }
+
+            .culture-bubble {
+                position: absolute;
+                margin: 0 !important;
+            }
+
+            /* Bulle 01 — AU CENTRE (au premier plan par défaut) */
+            #bubble-1 {
+                width: clamp(290px, 36vw, 450px);
+                height: clamp(290px, 36vw, 450px);
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                z-index: 20;
+                padding: 2.5rem;
+                animation: floatCenter 6.5s ease-in-out infinite;
+            }
+
+            #bubble-1:hover {
+                z-index: 30 !important;
+                transform: translate(-50%, -50%) scale(1.06);
+            }
+
+            #bubble-1:active {
+                transform: translate(-50%, -50%) scale(1.02);
+            }
+
+            /* Bulles périphériques (chevauchant généreusement les 4 coins de la bulle centrale) */
+            #bubble-2,
+            #bubble-3,
+            #bubble-4,
+            #bubble-5 {
+                width: clamp(250px, 33vw, 410px);
+                height: clamp(250px, 33vw, 410px);
+                padding: 2.15rem;
+                animation: floatPeripheral 6s ease-in-out infinite;
+            }
+
+            /* Bulle 02 — HAUT-GAUCHE */
+            #bubble-2 {
+                top: 3%;
+                left: 9%;
+                z-index: 12;
+                animation-delay: 0.6s;
+            }
+
+            /* Bulle 03 — HAUT-DROITE */
+            #bubble-3 {
+                top: 3%;
+                right: 9%;
+                z-index: 12;
+                animation-delay: 1.4s;
+            }
+
+            /* Bulle 04 — BAS-GAUCHE */
+            #bubble-4 {
+                bottom: 2.5%;
+                left: 9%;
+                z-index: 13;
+                animation-delay: 2.1s;
+            }
+
+            /* Bulle 05 — BAS-DROITE */
+            #bubble-5 {
+                bottom: 2.5%;
+                right: 9%;
+                z-index: 13;
+                animation-delay: 2.8s;
+            }
+        }
+
+        /* ===================================================================== */
+        /* ANIMATION D'EXPANSION EN PLEIN ÉCRAN (COULEUR UNIE DE LA BULLE)        */
+        /* ===================================================================== */
+        #bubble-morph-circle {
+            position: fixed;
+            border-radius: 9999px;
+            pointer-events: none;
+            z-index: 45;
+            transform: translate(-50%, -50%) scale(0);
+            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease;
+            opacity: 0;
+        }
+
+        #bubble-morph-circle.expanding {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        #fullscreen-view {
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            overflow-y: auto;
+            background-color: #F8FAFC;
+            opacity: 0;
+            pointer-events: none;
+            visibility: hidden;
+            transition: opacity 0.28s ease;
+        }
+
+        #fullscreen-view.active {
+            opacity: 1;
+            pointer-events: auto;
+            visibility: visible;
+        }
+
+        /* ===================================================================== */
+        /* MODE ÉDITION EN DIRECT (CONTENTEDITABLE)                              */
+        /* ===================================================================== */
+        body.edit-mode [data-editable] {
+            outline: 2px dashed rgba(255, 255, 255, 0.85);
+            outline-offset: 3px;
+            border-radius: 6px;
+            cursor: text;
+        }
+
+        body.edit-mode header [data-editable],
+        body.edit-mode #fs-content [data-editable] {
+            outline: 2px dashed #64748B;
+            background-color: #FEF9C3;
+            color: #0F172A;
+        }
+
+        body.edit-mode [data-editable]:focus {
+            outline: 2px solid #0F172A;
+            background-color: #FFFFFF;
+            color: #0F172A;
+        }
+    
+        /* ===================================================================== */
+        /* FINITION DES BULLES ET DES CARTES (couleurs unies, sans dégradé)       */
+        /* ===================================================================== */
+        .culture-bubble {
+            border-width: 8px;
+            box-shadow: 0 26px 56px rgba(15, 23, 42, 0.22), 0 0 0 7px rgba(255, 255, 255, 0.6), inset 0 -16px 0 rgba(0, 0, 0, 0.09), inset 0 0 0 10px rgba(255, 255, 255, 0.12);
+        }
+        .culture-bubble:hover {
+            box-shadow: 0 34px 70px rgba(15, 23, 42, 0.32), 0 0 0 9px rgba(255, 255, 255, 0.85), inset 0 -16px 0 rgba(0, 0, 0, 0.09);
+        }
+        .culture-bubble::before {
+            inset: 16px;
+            border: 2px dashed rgba(255, 255, 255, 0.4);
+        }
+        .culture-bubble:hover::before {
+            border-style: solid;
+        }
+        .culture-bubble::after {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 18%;
+            width: 24%;
+            height: 11%;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(-30deg);
+            pointer-events: none;
+        }
+        .culture-bubble > svg {
+            padding: 7px;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.18);
+        }
+        .culture-bubble h2 {
+            text-shadow: 0 2px 0 rgba(0, 0, 0, 0.16);
+        }
+
+        /* Cartes à l'intérieur des bulles 1 à 4 : bandeau de la couleur de la bulle + ombre pleine */
+        .skin .rounded-3xl.bg-white {
+            border: 2px solid var(--soft);
+            border-top: 8px solid var(--accent);
+            border-radius: 28px;
+            box-shadow: 7px 7px 0 var(--soft);
+        }
+        .skin .rounded-2xl.border {
+            border-width: 2px;
+        }
+        .skin .rounded-2xl.flex.items-center.justify-center {
+            box-shadow: 3px 3px 0 rgba(15, 23, 42, 0.2);
+        }
+        .skin .grid > .rounded-2xl {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .skin .grid > .rounded-2xl:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 0 var(--soft);
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .culture-bubble { animation: none !important; }
+        }
+    
+        /* ===================================================================== */
+        /* FOND DE LA PAGE D'ACCUEIL (couleurs unies, sans dégradé)               */
+        /* ===================================================================== */
+        body {
+            background-color: #EAF0F8;
+            background-image: none;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            background: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%201600%201000%22%20preserveAspectRatio=%22xMidYMid%20slice%22%3E%0A%3Cdefs%3E%3Cpattern%20id=%22d%22%20width=%2230%22%20height=%2230%22%20patternUnits=%22userSpaceOnUse%22%3E%3Ccircle%20cx=%222%22%20cy=%222%22%20r=%221.3%22%20fill=%22%2394A3B8%22%20fill-opacity=%22.35%22/%3E%3C/pattern%3E%3C/defs%3E%0A%3Crect%20width=%221600%22%20height=%221000%22%20fill=%22url%28%23d%29%22/%3E%0A%3Ccircle%20cx=%22800%22%20cy=%22500%22%20r=%22390%22%20fill=%22%231E40AF%22%20fill-opacity=%22.045%22/%3E%0A%3Ccircle%20cx=%22130%22%20cy=%22150%22%20r=%22270%22%20fill=%22%231E40AF%22%20fill-opacity=%22.08%22/%3E%0A%3Ccircle%20cx=%221490%22%20cy=%22120%22%20r=%22230%22%20fill=%22%23B45309%22%20fill-opacity=%22.09%22/%3E%0A%3Ccircle%20cx=%221510%22%20cy=%22890%22%20r=%22310%22%20fill=%22%23047857%22%20fill-opacity=%22.08%22/%3E%0A%3Ccircle%20cx=%22100%22%20cy=%22880%22%20r=%22250%22%20fill=%22%235B21B6%22%20fill-opacity=%22.08%22/%3E%0A%3Ccircle%20cx=%22330%22%20cy=%22430%22%20r=%2292%22%20fill=%22none%22%20stroke=%22%23B91C1C%22%20stroke-opacity=%22.16%22%20stroke-width=%223%22/%3E%0A%3Ccircle%20cx=%221290%22%20cy=%22520%22%20r=%22120%22%20fill=%22none%22%20stroke=%22%231E40AF%22%20stroke-opacity=%22.15%22%20stroke-width=%223%22/%3E%0A%3Ccircle%20cx=%22770%22%20cy=%2295%22%20r=%2258%22%20fill=%22none%22%20stroke=%22%23047857%22%20stroke-opacity=%22.2%22%20stroke-width=%223%22/%3E%0A%3Ccircle%20cx=%22920%22%20cy=%22930%22%20r=%2282%22%20fill=%22none%22%20stroke=%22%23B45309%22%20stroke-opacity=%22.18%22%20stroke-width=%223%22/%3E%0A%3Ccircle%20cx=%22520%22%20cy=%2280%22%20r=%2214%22%20fill=%22%23B91C1C%22%20fill-opacity=%22.2%22/%3E%0A%3Ccircle%20cx=%221120%22%20cy=%22330%22%20r=%2210%22%20fill=%22%235B21B6%22%20fill-opacity=%22.22%22/%3E%0A%3Ccircle%20cx=%22240%22%20cy=%22640%22%20r=%2216%22%20fill=%22%23B45309%22%20fill-opacity=%22.2%22/%3E%0A%3Ccircle%20cx=%221380%22%20cy=%22700%22%20r=%2212%22%20fill=%22%231E40AF%22%20fill-opacity=%22.22%22/%3E%0A%3Ccircle%20cx=%22640%22%20cy=%22900%22%20r=%2211%22%20fill=%22%23047857%22%20fill-opacity=%22.22%22/%3E%0A%3C/svg%3E") center / cover no-repeat;
+        }
+        body > header {
+            background-color: rgba(255, 255, 255, 0.72);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            border-bottom-color: rgba(148, 163, 184, 0.35);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Élément Audio HTML5 pour la musique de fond (GitHub Pages : musique.mp3) -->
+    <audio id="bg-music" loop preload="auto" src="musique.mp3"></audio>
+
+    <!-- ===================================================================== -->
+    <!-- BARRE SUPÉRIEURE ÉPURÉE (TITRE + LECTEUR AUDIO + ÉDITION + EXPORT)    -->
+    <!-- ===================================================================== -->
+    <header class="w-full px-4 sm:px-8 py-3 flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 bg-[#F8FAFC] sticky top-0 z-30">
+        <!-- Titre à gauche -->
+        <div class="flex items-center gap-3">
+            <span class="w-3.5 h-3.5 rounded-full bg-[#1E40AF] shrink-0"></span>
+            <div>
+                <h1 data-editable="site_title" class="text-base sm:text-lg font-extrabold tracking-tight text-slate-900 leading-tight">
+                    Mon Portrait Culturel
+                </h1>
+                <p data-editable="site_subtitle" class="text-xs text-slate-500 font-medium">
+                    Cliquez sur une bulle pour explorer mon univers
+                </p>
+            </div>
+        </div>
+
+        <!-- Contrôles à droite : Lecteur Musique + Mode Édition + Télécharger (.html) -->
+        <div class="flex flex-wrap items-center gap-2">
+            <!-- 1. Lecteur musique de fond -->
+            <div id="music-player-box" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-slate-300 shadow-2xs">
+                <button id="music-toggle-btn" onclick="toggleMusic()" title="Lecture / Pause musique de fond" class="flex items-center gap-1.5 text-xs font-extrabold text-slate-800 hover:text-[#1E40AF] transition-colors cursor-pointer">
+                    <span id="music-icon-play" class="flex items-center justify-center w-5 h-5 rounded-full bg-[#1E40AF] text-white">
+                        <svg class="w-2.5 h-2.5 ml-0.5" viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="5 3 19 12 5 21 5 3"/>
+                        </svg>
+                    </span>
+                    <span id="music-icon-pause" class="hidden items-center justify-center w-5 h-5 rounded-full bg-[#047857] text-white">
+                        <svg class="w-2.5 h-2.5" viewBox="0 0 24 24" fill="currentColor">
+                            <rect x="6" y="4" width="4" height="16"/>
+                            <rect x="14" y="4" width="4" height="16"/>
+                        </svg>
+                    </span>
+
+                    <!-- Petites barres d'égaliseur animées -->
+                    <span class="flex items-end gap-0.5 h-3.5 px-0.5" aria-hidden="true">
+                        <span class="eq-bar"></span>
+                        <span class="eq-bar"></span>
+                        <span class="eq-bar"></span>
+                        <span class="eq-bar"></span>
+                    </span>
+                    <span id="music-status-text" class="hidden md:inline text-[11px] font-bold text-slate-700">Musique</span>
+                </button>
+
+                <!-- Réglage du volume -->
+                <input id="music-volume" type="range" min="0" max="1" step="0.02" value="0.45" oninput="updateVolume(this.value)" title="Volume de la musique" class="volume-slider w-14 sm:w-16">
+
+                <!-- Bouton Charger .mp3 -->
+                <label for="mp3-file-input" title="Importer votre fichier .mp3 pour le tester et l'embarquer à l'export" class="flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-extrabold transition-colors cursor-pointer">
+                    <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 18V5l12-2v13"/>
+                        <circle cx="6" cy="18" r="3"/>
+                        <circle cx="18" cy="16" r="3"/>
+                    </svg>
+                    <span>Charger .mp3</span>
+                </label>
+                <input id="mp3-file-input" type="file" accept="audio/*" onchange="handleMp3Upload(event)" class="hidden">
+            </div>
+
+            <!-- 2. Bouton Mode Édition -->
+            <button id="edit-btn" onclick="toggleEditMode()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-bold bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                    <path d="m15 5 4 4"/>
+                </svg>
+                <span id="edit-btn-label">Mode Édition</span>
+            </button>
+
+            <!-- 3. Bouton Télécharger (.html) -->
+            <button onclick="downloadStandaloneHTML()" class="flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold bg-slate-900 text-white hover:bg-slate-800 transition-colors cursor-pointer">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" x2="12" y1="15" y2="3"/>
+                </svg>
+                <span>Télécharger (.html)</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- ===================================================================== -->
+    <!-- CONTENEUR PRINCIPAL : 1 BULLE CENTRALE + 4 BULLES PÉRIPHÉRIQUES        -->
+    <!-- ===================================================================== -->
+    <main class="cluster-stage flex-1">
+        <div class="bubbles-cluster" role="region" aria-label="Portrait culturel interactif en 5 bulles">
+
+            <!-- BULLE 01 — AU CENTRE : Bleu Océan uni (#1E40AF) -->
+            <div id="bubble-1" onclick="handleBubbleClick(event, 1)" style="background-color: #1E40AF;" class="culture-bubble">
+                <span class="px-3.5 py-1 rounded-full bg-black/25 text-xs font-extrabold tracking-widest uppercase mb-3">
+                    01
+                </span>
+                <svg class="w-10 h-10 mb-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="8" r="5"/>
+                    <path d="M20 21a8 8 0 0 0-16 0"/>
+                </svg>
+                <h2 data-editable="b1_title" class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight leading-tight mb-2">
+                    Qui suis-je ?
+                </h2>
+                <p data-editable="b1_sub" class="text-xs sm:text-sm font-semibold text-blue-100 max-w-[240px] leading-snug">
+                    Pontoise • Cergy • Grenoble • Ingénieur
+                </p>
+                <span class="explore-pill mt-4 inline-flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider bg-white/15 px-3.5 py-1.5 rounded-full transition-colors">
+                    Explorer
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+                    </svg>
+                </span>
+            </div>
+
+            <!-- BULLE 02 — HAUT-GAUCHE : Rouge Impérial uni (#B91C1C) -->
+            <div id="bubble-2" onclick="handleBubbleClick(event, 2)" style="background-color: #B91C1C;" class="culture-bubble">
+                <span class="px-3 py-1 rounded-full bg-black/25 text-xs font-extrabold tracking-widest uppercase mb-2.5">
+                    02
+                </span>
+                <svg class="w-9 h-9 mb-2.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                    <polyline points="9 22 9 12 15 12 15 22"/>
+                </svg>
+                <h2 data-editable="b2_title" class="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight leading-tight mb-1.5">
+                    Racines & Famille
+                </h2>
+                <p data-editable="b2_sub" class="text-xs sm:text-sm font-semibold text-red-100 max-w-[225px] leading-snug">
+                    Mère française • Père chinois-laotien
+                </p>
+                <span class="explore-pill mt-3.5 inline-flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider bg-white/15 px-3.5 py-1.5 rounded-full transition-colors">
+                    Explorer
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+                    </svg>
+                </span>
+            </div>
+
+            <!-- BULLE 03 — HAUT-DROITE : Ambre Chaud uni (#B45309) -->
+            <div id="bubble-3" onclick="handleBubbleClick(event, 3)" style="background-color: #B45309;" class="culture-bubble">
+                <span class="px-3 py-1 rounded-full bg-black/25 text-xs font-extrabold tracking-widest uppercase mb-2.5">
+                    03
+                </span>
+                <svg class="w-9 h-9 mb-2.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+                </svg>
+                <h2 data-editable="b3_title" class="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight leading-tight mb-1.5">
+                    Valeurs & Croyances
+                </h2>
+                <p data-editable="b3_sub" class="text-xs sm:text-sm font-semibold text-amber-100 max-w-[225px] leading-snug">
+                    Agnostique • Rituels • Sciences
+                </p>
+                <span class="explore-pill mt-3.5 inline-flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider bg-white/15 px-3.5 py-1.5 rounded-full transition-colors">
+                    Explorer
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+                    </svg>
+                </span>
+            </div>
+
+            <!-- BULLE 04 — BAS-GAUCHE : Violet Électrique uni (#5B21B6) -->
+            <div id="bubble-4" onclick="handleBubbleClick(event, 4)" style="background-color: #5B21B6;" class="culture-bubble">
+                <span class="px-3 py-1 rounded-full bg-black/25 text-xs font-extrabold tracking-widest uppercase mb-2.5">
+                    04
+                </span>
+                <svg class="w-9 h-9 mb-2.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="14" height="20" x="5" y="2" rx="2" ry="2"/>
+                    <path d="M12 18h.01"/>
+                </svg>
+                <h2 data-editable="b4_title" class="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight leading-tight mb-1.5">
+                    Génération & Évolution
+                </h2>
+                <p data-editable="b4_sub" class="text-xs sm:text-sm font-semibold text-violet-100 max-w-[225px] leading-snug">
+                    Génération 2003 • Numérique & IA
+                </p>
+                <span class="explore-pill mt-3.5 inline-flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider bg-white/15 px-3.5 py-1.5 rounded-full transition-colors">
+                    Explorer
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+                    </svg>
+                </span>
+            </div>
+
+            <!-- BULLE 05 — BAS-DROITE : Vert Émeraude uni (#047857) -->
+            <div id="bubble-5" onclick="handleBubbleClick(event, 5)" style="background-color: #047857;" class="culture-bubble">
+                <span class="px-3 py-1 rounded-full bg-black/25 text-xs font-extrabold tracking-widest uppercase mb-2.5">
+                    05
+                </span>
+                <svg class="w-9 h-9 mb-2.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/>
+                    <path d="M2 12h20"/>
+                </svg>
+                <h2 data-editable="b5_title" class="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight leading-tight mb-1.5">
+                    Amis & Voyages
+                </h2>
+                <p data-editable="b5_sub" class="text-xs sm:text-sm font-semibold text-emerald-100 max-w-[225px] leading-snug">
+                    Diversité culturelle & religieuse
+                </p>
+                <span class="explore-pill mt-3.5 inline-flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider bg-white/15 px-3.5 py-1.5 rounded-full transition-colors">
+                    Explorer
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+                    </svg>
+                </span>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Cercle d'expansion animé -->
+    <div id="bubble-morph-circle"></div>
+
+    <!-- ===================================================================== -->
+    <!-- VUE MODALE PLEIN ÉCRAN AU CLIC SUR UNE BULLE                          -->
+    <!-- ===================================================================== -->
+    <div id="fullscreen-view" role="dialog" aria-modal="true">
+
+        <!-- Bandeau supérieur de la couleur unie de la bulle -->
+        <div id="fs-banner" class="text-white transition-colors duration-300">
+            <!-- Barre de navigation rapide + Bouton Retour aux bulles -->
+            <div class="border-b border-white/15 bg-black/15 px-4 sm:px-8 py-3">
+                <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-2.5">
+                    <div class="flex items-center gap-1.5 overflow-x-auto py-0.5 max-w-full">
+                        <button onclick="switchBubble(1)" id="nav-pill-1" class="px-3 py-1.5 rounded-full text-xs font-bold cursor-pointer shrink-0">01. Qui suis-je ?</button>
+                        <button onclick="switchBubble(2)" id="nav-pill-2" class="px-3 py-1.5 rounded-full text-xs font-bold cursor-pointer shrink-0">02. Racines & Famille</button>
+                        <button onclick="switchBubble(3)" id="nav-pill-3" class="px-3 py-1.5 rounded-full text-xs font-bold cursor-pointer shrink-0">03. Valeurs & Croyances</button>
+                        <button onclick="switchBubble(4)" id="nav-pill-4" class="px-3 py-1.5 rounded-full text-xs font-bold cursor-pointer shrink-0">04. Génération & Évolution</button>
+                        <button onclick="switchBubble(5)" id="nav-pill-5" class="px-3 py-1.5 rounded-full text-xs font-bold cursor-pointer shrink-0">05. Amis & Voyages</button>
+                    </div>
+
+                    <button onclick="closeBubbleView()" class="flex items-center gap-1.5 bg-white text-slate-900 hover:bg-slate-100 px-4 py-1.5 rounded-full text-xs font-extrabold shadow-sm transition-colors cursor-pointer shrink-0">
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m15 18-6-6 6-6"/>
+                        </svg>
+                        <span>Retour aux bulles</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- En-tête héroïque de la fiche -->
+            <div class="max-w-5xl mx-auto px-4 sm:px-8 py-8 sm:py-10">
+                <span id="fs-badge" class="inline-block px-3.5 py-1 rounded-full bg-black/25 text-xs font-extrabold uppercase tracking-widest mb-3">
+                    01
+                </span>
+                <h2 id="fs-title" class="text-3xl sm:text-5xl font-extrabold tracking-tight mb-2">
+                    Titre
+                </h2>
+                <p id="fs-subtitle" class="text-base sm:text-xl text-white/90 font-medium">
+                    Sous-titre
+                </p>
+            </div>
+        </div>
+
+        <!-- Contenu graphique contrasté -->
+        <div class="max-w-5xl mx-auto px-4 sm:px-8 py-8 sm:py-10">
+            <div id="fs-content"></div>
+
+            <!-- Navigation Précédent / Suivant en bas de fiche -->
+            <div class="flex items-center justify-between mt-10 pt-6 border-t border-slate-200">
+                <button onclick="stepBubble(-1)" class="flex items-center gap-2 bg-white border border-slate-300 hover:bg-slate-100 text-slate-800 px-4 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-colors cursor-pointer">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 12H5"/><path d="m12 19-7-7 7-7"/>
+                    </svg>
+                    <span id="fs-prev-label">Précédent</span>
+                </button>
+
+                <button id="fs-next-btn" onclick="stepBubble(1)" class="flex items-center gap-2 text-white px-5 py-2.5 rounded-full text-xs sm:text-sm font-extrabold shadow-sm transition-opacity hover:opacity-90 cursor-pointer">
+                    <span id="fs-next-label">Suivant</span>
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast discrète -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 bg-slate-900 text-white px-4 py-2.5 rounded-full text-xs font-bold shadow-xl border border-white/15 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        Action effectuée
+    </div>
+
+    <script>
+        // =========================================================================
+        // 1. DONNÉES GRAPHIQUES DES 5 BULLES (ZÉRO JARGON, COULEURS UNIES)
+        // =========================================================================
+        const bubblesContent = {
+            1: {
+                id: 1,
+                shortTitle: "01. Qui suis-je ?",
+                color: "#1E40AF",
+                badge: "Bulle 01 • Identité, Parcours & Langues",
+                title: "Qui suis-je ?",
+                subtitle: "Homme né en 2003 à Pontoise, ancré à Cergy et en alternance chez Schneider Electric à Grenoble",
+                html: `
+                    <div style="--accent:#1E40AF;--soft:#DBEAFE" class="skin space-y-6">
+                        <!-- Card 1 : Identité & Parcours Géographique -->
+                        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+                            <div class="flex flex-wrap items-center justify-between gap-2 mb-5">
+                                <div>
+                                    <span class="text-xs font-extrabold uppercase tracking-wider text-[#1E40AF]">Carte Identité & Parcours Géographique</span>
+                                    <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-0.5">Mes Repères & Ma Mobilité Actuelle</h3>
+                                </div>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="px-3.5 py-1 rounded-full bg-[#1E40AF] text-white text-xs font-extrabold">Homme • Né en 2003</span>
+                                    <span class="px-3.5 py-1 rounded-full bg-blue-50 text-[#1E40AF] border border-blue-200 text-xs font-extrabold">Double héritage franco-asiatique</span>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <!-- Ancrage Pontoise / Cergy -->
+                                <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200">
+                                    <div class="w-10 h-10 rounded-2xl bg-[#1E40AF] text-white flex items-center justify-center text-lg mb-3">
+                                        📍
+                                    </div>
+                                    <div class="text-xs font-extrabold uppercase text-[#1E40AF]">Ancrage (95)</div>
+                                    <div class="text-base font-extrabold text-slate-900 mt-0.5">Pontoise & Cergy</div>
+                                    <p data-editable="c1_cergy" class="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed">
+                                        Homme né en <strong>2003</strong> à <strong>Pontoise (95)</strong>, ayant toujours vécu à <strong>Cergy</strong> et ses environs.
+                                    </p>
+                                </div>
+
+                                <!-- Double héritage -->
+                                <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200">
+                                    <div class="w-10 h-10 rounded-2xl bg-[#B91C1C] text-white flex items-center justify-center text-lg mb-3">
+                                        🌏
+                                    </div>
+                                    <div class="text-xs font-extrabold uppercase text-[#B91C1C]">Double héritage</div>
+                                    <div class="text-base font-extrabold text-slate-900 mt-0.5">France, Chine & Laos</div>
+                                    <p data-editable="c1_heritage" class="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed">
+                                        Double héritage franco-asiatique avec une <strong>mère française</strong> et un <strong>père chinois-laotien</strong>.
+                                    </p>
+                                </div>
+
+                                <!-- Mobilité actuelle Grenoble / Schneider -->
+                                <div class="p-5 rounded-2xl bg-[#1E40AF] text-white">
+                                    <div class="w-10 h-10 rounded-2xl bg-white text-[#1E40AF] flex items-center justify-center text-lg mb-3">
+                                        ⚡
+                                    </div>
+                                    <div class="text-xs font-extrabold uppercase text-blue-200">Aujourd'hui (38)</div>
+                                    <div class="text-base font-extrabold mt-0.5">Grenoble • Schneider Electric</div>
+                                    <p data-editable="c1_grenoble" class="text-xs sm:text-sm text-blue-50 mt-1.5 leading-relaxed">
+                                        Première expérience de vie seul à <strong>Grenoble</strong> pour la partie entreprise de mon alternance chez <strong>Schneider Electric</strong>, en parallèle de mon cursus d'ingénieur informatique à <strong>CY Tech</strong> (Cergy).
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 2 : Profil & Tempérament -->
+                        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+                            <span class="text-xs font-extrabold uppercase tracking-wider text-[#1E40AF]">Carte Profil & Tempérament</span>
+                            <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-0.5 mb-4">Esprit Scientifique & Équilibre Personnel</h3>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="p-5 rounded-2xl bg-blue-50/60 border border-blue-200 flex items-start gap-3.5">
+                                    <div class="w-11 h-11 rounded-2xl bg-[#1E40AF] text-white flex items-center justify-center text-xl shrink-0">🔭</div>
+                                    <div>
+                                        <h4 class="text-base font-extrabold text-slate-900">Esprit rationnel, logique & cartésien</h4>
+                                        <p data-editable="c1_profil_sci" class="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">Attiré par les sciences : <strong>astronomie</strong>, <strong>cosmologie</strong>, <strong>physique quantique</strong> et <strong>mathématiques</strong>.</p>
+                                    </div>
+                                </div>
+                                <div class="p-5 rounded-2xl bg-amber-50/60 border border-amber-200 flex items-start gap-3.5">
+                                    <div class="w-11 h-11 rounded-2xl bg-[#B45309] text-white flex items-center justify-center text-xl shrink-0">🧭</div>
+                                    <div>
+                                        <h4 class="text-base font-extrabold text-slate-900">Agnostique, voire athée</h4>
+                                        <p data-editable="c1_profil_agno" class="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">Une vision du monde qui ne repose sur aucune religion, mais sur la <strong>raison</strong> et l'<strong>observation</strong>.</p>
+                                    </div>
+                                </div>
+                                <div class="md:col-span-2 p-6 rounded-2xl bg-[#1E40AF] text-white flex items-start gap-4">
+                                    <div class="w-14 h-14 rounded-2xl bg-white text-[#1E40AF] flex items-center justify-center text-3xl shrink-0">🏃</div>
+                                    <div>
+                                        <span class="inline-block px-3 py-0.5 rounded-full bg-white text-[#1E40AF] text-xs font-extrabold uppercase tracking-wider mb-1.5">Hygiène de vie</span>
+                                        <h4 class="text-lg sm:text-xl font-extrabold">Le sport, au cœur de mon quotidien</h4>
+                                        <p data-editable="c1_profil_sport" class="text-sm text-blue-100 mt-1 leading-relaxed">Sportif au quotidien : le sport n'est pas un simple loisir, c'est une véritable <strong class="text-white">hygiène de vie</strong>.</p>
+                                    </div>
+                                </div>
+                                <div class="p-5 rounded-2xl bg-emerald-50/60 border border-emerald-200 flex items-start gap-3.5">
+                                    <div class="w-11 h-11 rounded-2xl bg-[#047857] text-white flex items-center justify-center text-xl shrink-0">🎮</div>
+                                    <div>
+                                        <h4 class="text-base font-extrabold text-slate-900">Passionné de jeux vidéo</h4>
+                                        <p data-editable="c1_profil_jv" class="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">Passionné de <strong>jeux vidéo</strong>.</p>
+                                    </div>
+                                </div>
+                                <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 flex items-start gap-3.5">
+                                    <div class="w-11 h-11 rounded-2xl bg-[#5B21B6] text-white flex items-center justify-center text-xl shrink-0">💻</div>
+                                    <div>
+                                        <h4 class="text-base font-extrabold text-slate-900">Un peu nerd & connecté</h4>
+                                        <p data-editable="c1_profil_geek" class="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">Un peu nerd, passionné de <strong>culture numérique</strong>.</p>
+                                    </div>
+                                </div>
+                                </div>
+                        </div>
+
+                        <!-- Card 3 : Mes Langues (Visual Progress Bars) -->
+                        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+                            <div class="flex flex-wrap items-center justify-between gap-2 mb-6">
+                                <div>
+                                    <span class="text-xs font-extrabold uppercase tracking-wider text-[#1E40AF]">Infographie</span>
+                                    <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-0.5">Mes Langues</h3>
+                                </div>
+                                <span class="px-3 py-1 rounded-full bg-blue-50 text-[#1E40AF] text-xs font-extrabold">4 langues</span>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <!-- Français — 100 % -->
+                                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-extrabold text-slate-900 text-base">🇫🇷 Français</span>
+                                        <span class="px-2.5 py-0.5 rounded-full bg-[#1E40AF] text-white text-xs font-extrabold">100 %</span>
+                                    </div>
+                                    <div class="w-full h-3 bg-slate-200 rounded-full overflow-hidden mb-2.5">
+                                        <div class="bg-[#1E40AF] h-full rounded-full" style="width: 100%"></div>
+                                    </div>
+                                    <p data-editable="c1_lang_fr" class="text-xs sm:text-sm text-slate-600 font-medium">
+                                        Langue maternelle, langue du quotidien, des études et de la pensée.
+                                    </p>
+                                </div>
+
+                                <!-- Anglais — 75 % -->
+                                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-extrabold text-slate-900 text-base">🇬🇧 Anglais</span>
+                                        <span class="px-2.5 py-0.5 rounded-full bg-[#047857] text-white text-xs font-extrabold">75 %</span>
+                                    </div>
+                                    <div class="w-full h-3 bg-slate-200 rounded-full overflow-hidden mb-2.5">
+                                        <div class="bg-[#047857] h-full rounded-full" style="width: 75%"></div>
+                                    </div>
+                                    <p data-editable="c1_lang_en" class="text-xs sm:text-sm text-slate-600 font-medium">
+                                        Appris à l'école, utilisé au quotidien pour l'ingénierie informatique, la tech, les jeux vidéo et les voyages.
+                                    </p>
+                                </div>
+
+                                <!-- Espagnol — 20 % -->
+                                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-extrabold text-slate-900 text-base">🇪🇸 Espagnol</span>
+                                        <span class="px-2.5 py-0.5 rounded-full bg-[#B45309] text-white text-xs font-extrabold">20 %</span>
+                                    </div>
+                                    <div class="w-full h-3 bg-slate-200 rounded-full overflow-hidden mb-2.5">
+                                        <div class="bg-[#B45309] h-full rounded-full" style="width: 20%"></div>
+                                    </div>
+                                    <p data-editable="c1_lang_es" class="text-xs sm:text-sm text-slate-600 font-medium">
+                                        Appris durant le collège et le lycée, mais peu pratiqué depuis.
+                                    </p>
+                                </div>
+
+                                <!-- Cantonais — 1 % -->
+                                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-extrabold text-slate-900 text-base">🇨🇳 Cantonais</span>
+                                        <span class="px-2.5 py-0.5 rounded-full bg-[#B91C1C] text-white text-xs font-extrabold">1 %</span>
+                                    </div>
+                                    <div class="w-full h-3 bg-slate-200 rounded-full overflow-hidden mb-2.5">
+                                        <div class="bg-[#B91C1C] h-full rounded-full" style="width: 4%"></div>
+                                    </div>
+                                    <p data-editable="c1_lang_zh" class="text-xs sm:text-sm text-slate-600 font-medium">
+                                        Reconnaissance uniquement de quelques mots et phrases de base répétés aux enfants (<em>« touche pas »</em>, <em>« va te laver les mains »</em>, etc.).
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            2: {
+                id: 2,
+                shortTitle: "02. Racines & Famille",
+                color: "#B91C1C",
+                badge: "Bulle 02 • Racines & Famille",
+                title: "Racines & Famille",
+                subtitle: "Mère française, père chinois-laotien, une grande famille asiatique et deux univers culturels",
+                html: `
+                    <div style="--accent:#B91C1C;--soft:#FECACA" class="skin space-y-6">
+                        <!-- Card 1 : Mon Double Héritage Familial (Prominent 2-part split card) -->
+                        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+                            <span class="text-xs font-extrabold uppercase tracking-wider text-[#B91C1C]">Carte Famille & Origines</span>
+                            <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-0.5 mb-5">Mon Double Héritage Familial</h3>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <!-- Côté Maternel — Mère française -->
+                                <div class="p-5 sm:p-6 rounded-2xl bg-blue-50/60 border-2 border-[#1E40AF] flex items-start gap-4">
+                                    <div class="w-12 h-12 rounded-2xl bg-[#1E40AF] text-white flex items-center justify-center text-2xl shrink-0">
+                                        🇫🇷
+                                    </div>
+                                    <div>
+                                        <span class="inline-block px-2.5 py-0.5 rounded-full bg-[#1E40AF] text-white text-[11px] font-extrabold uppercase tracking-wider mb-1.5">
+                                            Côté Maternel
+                                        </span>
+                                        <h4 class="text-lg font-extrabold text-slate-900 mb-1.5">Mère française</h4>
+                                        <p data-editable="c2_mere" class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+                                            Transmission de la <strong>langue française</strong>, des repères culturels français, de la gastronomie et des fêtes traditionnelles en France.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <!-- Côté Paternel — Père chinois-laotien -->
+                                <div class="p-5 sm:p-6 rounded-2xl bg-red-50/60 border-2 border-[#B91C1C] flex items-start gap-4">
+                                    <div class="w-12 h-12 rounded-2xl bg-[#B91C1C] text-white flex items-center justify-center text-2xl shrink-0">
+                                        🏮
+                                    </div>
+                                    <div>
+                                        <span class="inline-block px-2.5 py-0.5 rounded-full bg-[#B91C1C] text-white text-[11px] font-extrabold uppercase tracking-wider mb-1.5">
+                                            Côté Paternel
+                                        </span>
+                                        <h4 class="text-lg font-extrabold text-slate-900 mb-1.5">Père chinois-laotien</h4>
+                                        <p data-editable="c2_pere" class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+                                            Double héritage <strong>chinois et laotien</strong>, porté par une <strong>très grande famille majoritairement du côté asiatique</strong> (nombreux oncles, tantes, cousins et cousines) et des rassemblements familiaux fréquents.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-5 p-5 rounded-2xl bg-slate-50 border-2 border-dashed border-slate-300">
+                                <div class="text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-3">Ma famille</div>
+                                <div class="flex flex-wrap gap-2.5 mb-3">
+                                    <span class="px-3.5 py-1.5 rounded-xl bg-[#1E40AF] text-white text-xs font-extrabold">👩 Mère</span>
+                                    <span class="px-3.5 py-1.5 rounded-xl bg-[#B91C1C] text-white text-xs font-extrabold">👨 Père</span>
+                                    <span class="px-3.5 py-1.5 rounded-xl bg-white border-2 border-slate-300 text-slate-900 text-xs font-extrabold">👭 Une sœur</span>
+                                    <span class="px-3.5 py-1.5 rounded-xl bg-red-50 border-2 border-[#B91C1C] text-[#991B1B] text-xs font-extrabold">👵 Oncles & tantes</span>
+                                    <span class="px-3.5 py-1.5 rounded-xl bg-red-50 border-2 border-[#B91C1C] text-[#991B1B] text-xs font-extrabold">🧒 Cousins & cousines</span>
+                                </div>
+                                <p data-editable="c2_famille" class="text-xs sm:text-sm text-slate-700 leading-relaxed">Une <strong>grande famille</strong>, surtout du <strong>côté asiatique</strong> : beaucoup d'<strong>oncles</strong>, de <strong>tantes</strong>, de <strong>cousins</strong> et de <strong>cousines</strong>, ainsi qu'une <strong>sœur</strong>.</p>
+                            </div>
+                        </div>
+
+                        <!-- Card 2 : Deux Univers dans l'Assiette (Side-by-Side Comparison) -->
+                        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+                            <span class="text-xs font-extrabold uppercase tracking-wider text-[#B91C1C]">Tableau Gastronomique Comparatif</span>
+                            <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-0.5 mb-5">Deux Univers dans l'Assiette</h3>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <!-- Colonne Gauche : Côté Français -->
+                                <div class="rounded-2xl border-2 border-[#1E40AF] bg-blue-50/40 p-5 space-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-lg font-extrabold text-slate-900">🇫🇷 Côté Français</span>
+                                        <span class="px-3 py-1 rounded-full bg-[#1E40AF] text-white text-xs font-extrabold">Classiques & Douceurs</span>
+                                    </div>
+
+                                    <div class="p-4 rounded-xl bg-white border border-slate-200">
+                                        <div class="text-xs font-extrabold uppercase text-[#1E40AF] mb-2">Entrées & Plats</div>
+                                        <p data-editable="c2_fr_plats" class="text-xs text-slate-600 mb-2.5 leading-relaxed">
+                                            Cuisine française variée, des classiques conviviaux comme la <strong>raclette</strong> jusqu'aux spécialités emblématiques comme les <strong>escargots</strong> et les <strong>cuisses de grenouille</strong> :
+                                        </p>
+                                        <div class="flex flex-wrap gap-2">
+                                            <span class="px-3 py-1 rounded-lg bg-slate-100 text-xs font-bold">🧀 Raclette</span>
+                                            <span class="px-3 py-1 rounded-lg bg-slate-100 text-xs font-bold">🐌 Escargots</span>
+                                            <span class="px-3 py-1 rounded-lg bg-slate-100 text-xs font-bold">🐸 Cuisses de grenouille</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="p-4 rounded-xl bg-white border border-slate-200">
+                                        <div class="text-xs font-extrabold uppercase text-[#1E40AF] mb-2">Pâtisseries & Desserts</div>
+                                        <div class="flex flex-wrap gap-2">
+                                            <span class="px-3 py-1 rounded-lg bg-slate-100 text-xs font-bold">🥐 Croissants</span>
+                                            <span class="px-3 py-1 rounded-lg bg-slate-100 text-xs font-bold">🍫 Pains au chocolat</span>
+                                            <span class="px-3 py-1 rounded-lg bg-slate-100 text-xs font-bold">🎂 Gâteaux au chocolat</span>
+                                            <span class="px-3 py-1 rounded-lg bg-slate-100 text-xs font-bold">🥧 Tartes</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Colonne Droite : Côté Asiatique -->
+                                <div class="rounded-2xl border-2 border-[#B91C1C] bg-red-50/40 p-5 space-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-lg font-extrabold text-slate-900">🥢 Côté Asiatique</span>
+                                        <span class="px-3 py-1 rounded-full bg-[#B91C1C] text-white text-xs font-extrabold">Saveurs & Contrastes</span>
+                                    </div>
+
+                                    <div class="p-4 rounded-xl bg-white border border-slate-200">
+                                        <div class="text-xs font-extrabold uppercase text-[#047857] mb-2">Plats du quotidien</div>
+                                        <div class="flex flex-wrap gap-2">
+                                            <span class="px-3 py-1 rounded-lg bg-slate-100 text-xs font-bold">🍜 Soupes & bouillons</span>
+                                            <span class="px-3 py-1 rounded-lg bg-slate-100 text-xs font-bold">🍚 Riz cantonais</span>
+                                            <span class="px-3 py-1 rounded-lg bg-slate-100 text-xs font-bold">🥟 Raviolis chinois</span>
+                                            <span class="px-3 py-1 rounded-lg bg-slate-100 text-xs font-bold">🦐 Fruits de mer</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="p-4 rounded-xl bg-white border border-red-200">
+                                        <div class="text-xs font-extrabold uppercase text-[#B91C1C] mb-2">Mets exotiques <em>(que je déteste)</em></div>
+                                        <div class="flex flex-wrap gap-2">
+                                            <span class="px-3 py-1 rounded-lg bg-red-50 text-red-950 text-xs font-bold">🫀 Cœur</span>
+                                            <span class="px-3 py-1 rounded-lg bg-red-50 text-red-950 text-xs font-bold">🦗 Insectes</span>
+                                            <span class="px-3 py-1 rounded-lg bg-red-50 text-red-950 text-xs font-bold">🩸 Cubes de sang</span>
+                                            <span class="px-3 py-1 rounded-lg bg-red-50 text-red-950 text-xs font-bold">🚫 Intestins</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="p-4 rounded-xl bg-white border border-slate-200">
+                                        <div class="text-xs font-extrabold uppercase text-[#B45309] mb-2">Fruits & Desserts</div>
+                                        <div class="flex flex-wrap gap-2 mb-2">
+                                            <span class="px-2.5 py-1 rounded-lg bg-amber-50 text-amber-950 text-xs font-bold">🍊 Pomelo chinois</span>
+                                            <span class="px-2.5 py-1 rounded-lg bg-amber-50 text-amber-950 text-xs font-bold">🍋 Kumquat</span>
+                                            <span class="px-2.5 py-1 rounded-lg bg-amber-50 text-amber-950 text-xs font-bold">🍈 Jaquier</span>
+                                            <span class="px-2.5 py-1 rounded-lg bg-amber-50 text-amber-950 text-xs font-bold">🍒 Longane</span>
+                                            <span class="px-2.5 py-1 rounded-lg bg-amber-50 text-amber-950 text-xs font-bold">👑 Durian</span>
+                                        </div>
+                                        <p data-editable="c2_as_desserts" class="text-xs text-slate-600 leading-relaxed">
+                                            Nombreux <strong>fruits exotiques</strong> en fin de repas et <strong>gâteaux chinois</strong> à base de <strong>pandan</strong>, de <strong>riz</strong> ou de <strong>noix de coco</strong> <em>(que je n'aime pas non plus)</em>.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 3 : Calendrier des Fêtes (Left = Fêtes françaises / Right = Fêtes asiatiques) -->
+                        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+                            <span class="text-xs font-extrabold uppercase tracking-wider text-[#B91C1C]">Calendrier des Fêtes</span>
+                            <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-0.5 mb-5">Fêtes Françaises & Fêtes Asiatiques</h3>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <!-- À gauche — Fêtes françaises -->
+                                <div class="p-5 rounded-2xl bg-blue-50/50 border-2 border-[#1E40AF]">
+                                    <div class="flex items-center gap-2 mb-3.5">
+                                        <span class="px-3 py-1 rounded-full bg-[#1E40AF] text-white text-xs font-extrabold uppercase tracking-wider">
+                                            🇫🇷 Fêtes françaises
+                                        </span>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-2.5">
+                                        <div class="px-3.5 py-2.5 rounded-xl bg-white border border-blue-200 text-xs sm:text-sm font-extrabold text-slate-900">🎄 Noël</div>
+                                        <div class="px-3.5 py-2.5 rounded-xl bg-white border border-blue-200 text-xs sm:text-sm font-extrabold text-slate-900">🐣 Pâques</div>
+                                        <div class="px-3.5 py-2.5 rounded-xl bg-white border border-blue-200 text-xs sm:text-sm font-extrabold text-slate-900">🎆 Nouvel An</div>
+                                        <div class="px-3.5 py-2.5 rounded-xl bg-white border border-blue-200 text-xs sm:text-sm font-extrabold text-slate-900">🕯️ Toussaint</div>
+                                    </div>
+                                </div>
+
+                                <!-- À droite — Fêtes asiatiques -->
+                                <div class="p-5 rounded-2xl bg-red-50/50 border-2 border-[#B91C1C]">
+                                    <div class="flex items-center gap-2 mb-3.5">
+                                        <span class="px-3 py-1 rounded-full bg-[#B91C1C] text-white text-xs font-extrabold uppercase tracking-wider">
+                                            🏮 Fêtes asiatiques
+                                        </span>
+                                    </div>
+                                    <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-1 gap-2.5">
+                                        <div class="px-3.5 py-2.5 rounded-xl bg-white border border-red-200 text-xs sm:text-sm font-extrabold text-slate-900">🐉 Nouvel An chinois</div>
+                                        <div class="px-3.5 py-2.5 rounded-xl bg-white border border-red-200 text-xs sm:text-sm font-extrabold text-slate-900">🇱🇦 Nouvel An laotien</div>
+                                        <div class="px-3.5 py-2.5 rounded-xl bg-white border border-red-200 text-xs sm:text-sm font-extrabold text-slate-900">🪔 Toussaint chinoise</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 4 : Deux Traditions de Dons (Left vs Right Face-off) -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <!-- À gauche — Cadeau de Noël (Tradition française) -->
+                            <div class="rounded-3xl bg-[#1E40AF] text-white p-6 border-4 border-blue-200 flex items-start gap-4">
+                                <div class="w-16 h-20 rounded-2xl bg-white text-[#1E40AF] flex items-center justify-center shrink-0 text-3xl">
+                                    🎁
+                                </div>
+                                <div>
+                                    <span class="inline-block px-3 py-0.5 rounded-full bg-white text-[#1E40AF] text-xs font-extrabold uppercase tracking-wider mb-1.5">
+                                        Tradition Française
+                                    </span>
+                                    <h4 class="text-lg sm:text-xl font-extrabold mb-1">Cadeau de Noël</h4>
+                                    <p data-editable="c2_noel" class="text-xs sm:text-sm text-blue-100 leading-relaxed">
+                                        Cadeaux emballés échangés en famille au pied du sapin lors des fêtes de fin d'année.
+                                    </p>
+                                    <div class="mt-3 pt-3 border-t border-white/30 flex items-start gap-2.5">
+                                        <span class="text-2xl">🥚</span>
+                                        <p data-editable="c2_paques" class="text-xs sm:text-sm text-blue-100 leading-relaxed">Côté français, on offre aussi des <strong class="text-white">œufs en chocolat</strong> à Pâques.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- À droite — Le « Lai See » (Tradition asiatique) -->
+                            <div class="rounded-3xl bg-[#991B1B] text-white p-6 border-4 border-[#F59E0B] flex items-start gap-4">
+                                <div class="w-16 h-20 rounded-2xl bg-[#DC2626] border-2 border-[#FBBF24] flex flex-col items-center justify-between p-1.5 shrink-0">
+                                    <div class="w-full h-3 border-b border-[#FBBF24] flex items-center justify-center">
+                                        <span class="w-2 h-2 rounded-full bg-[#FBBF24]"></span>
+                                    </div>
+                                    <div class="w-8 h-8 rounded-full bg-[#FBBF24] text-[#991B1B] flex items-center justify-center font-display font-extrabold text-xs">
+                                        利是
+                                    </div>
+                                    <span class="text-[8px] font-extrabold uppercase tracking-widest text-[#FDE68A]">LAI SEE</span>
+                                </div>
+                                <div>
+                                    <span class="inline-block px-3 py-0.5 rounded-full bg-[#F59E0B] text-slate-950 text-xs font-extrabold uppercase tracking-wider mb-1.5">
+                                        Tradition Asiatique
+                                    </span>
+                                    <h4 class="text-lg sm:text-xl font-extrabold mb-1">Le « Lai See »</h4>
+                                    <p data-editable="c2_laissee" class="text-xs sm:text-sm text-amber-50 leading-relaxed">
+                                        Enveloppe rouge contenant de l'argent offerte par les aînés lors du Nouvel An pour souhaiter chance, santé et prospérité.
+                                    </p>
+                                    <div class="mt-3 pt-3 border-t border-[#FBBF24]/50 flex items-start gap-2.5">
+                                        <span class="text-2xl">🍊</span>
+                                        <p data-editable="c2_mandarines" class="text-xs sm:text-sm text-amber-50 leading-relaxed">Côté asiatique, les lai see s'accompagnent de <strong class="text-white">mandarines</strong>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            3: {
+                id: 3,
+                shortTitle: "03. Valeurs & Croyances",
+                color: "#B45309",
+                badge: "Bulle 03 • Valeurs & Croyances",
+                title: "Valeurs & Croyances",
+                subtitle: "Liberté spirituelle, ouverture culturelle, rituels bouddhistes et passion des sciences",
+                html: `
+                    <div style="--accent:#B45309;--soft:#FDE68A" class="skin space-y-6">
+                        <!-- Card 1 : Liberté Spirituelle & Ouverture Culturelle -->
+                        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+                            <div class="flex flex-wrap items-center justify-between gap-2 mb-5">
+                                <div>
+                                    <span class="text-xs font-extrabold uppercase tracking-wider text-[#B45309]">Carte Liberté Spirituelle & Ouverture Culturelle</span>
+                                    <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-0.5">Choisir Librement Mes Convictions</h3>
+                                </div>
+                                <span class="px-3.5 py-1 rounded-full bg-[#B45309] text-white text-xs font-extrabold">Agnostique, voire Athée</span>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
+                                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+                                    <div class="text-xl mb-1.5">✝️</div>
+                                    <div class="text-xs font-extrabold uppercase text-slate-500">Côté maternel</div>
+                                    <p data-editable="c3_mom" class="text-sm font-bold text-slate-900 mt-1">
+                                        Mère baptisée chrétienne mais non croyante.
+                                    </p>
+                                </div>
+
+                                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+                                    <div class="text-xl mb-1.5">☸️</div>
+                                    <div class="text-xs font-extrabold uppercase text-slate-500">Côté paternel</div>
+                                    <p data-editable="c3_dad" class="text-sm font-bold text-slate-900 mt-1">
+                                        Père issu d'une famille bouddhiste mais non croyant lui aussi.
+                                    </p>
+                                </div>
+
+                                <div class="p-4 rounded-2xl bg-amber-50 border border-amber-200">
+                                    <div class="text-xl mb-1.5">🌍</div>
+                                    <div class="text-xs font-extrabold uppercase text-[#B45309]">Côté amis</div>
+                                    <p data-editable="c3_liberty" class="text-sm font-bold text-slate-900 mt-1">
+                                        Un cercle <strong>très diversifié</strong> sur le plan religieux : athées, agnostiques, chrétiens, musulmans et juifs.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Message transmis + position actuelle -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="p-5 rounded-2xl bg-[#B45309] text-white">
+                                    <div class="text-xs font-extrabold uppercase text-amber-200 mb-1.5">Le message transmis</div>
+                                    <p data-editable="c3_conv" class="text-sm sm:text-base font-bold leading-relaxed">Mes parents m'ont toujours dit que je pourrais <strong>choisir librement ma religion</strong>.</p>
+                                </div>
+                                <div class="p-5 rounded-2xl bg-amber-50 border-2 border-[#B45309]">
+                                    <div class="text-xs font-extrabold uppercase text-[#B45309] mb-1.5">Aujourd'hui</div>
+                                    <p data-editable="c3_agno" class="text-sm sm:text-base font-bold text-slate-900 leading-relaxed">Je suis <strong>agnostique, voire athée</strong>, avec un <strong>esprit très cartésien</strong>.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 2 : Rituels Bouddhistes Vécus en Famille -->
+                        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+                            <span class="text-xs font-extrabold uppercase tracking-wider text-[#B45309]">Carte Rituels Bouddhistes Vécus en Famille</span>
+                            <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-0.5 mb-5">Traditions & Hommages aux Ancêtres</h3>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div class="p-5 rounded-2xl bg-amber-50/70 border border-amber-200">
+                                    <div class="flex items-center gap-2.5 mb-2.5">
+                                        <span class="text-2xl">🛕</span>
+                                        <h4 class="text-lg font-extrabold text-slate-900">Au temple bouddhiste</h4>
+                                    </div>
+                                    <p data-editable="c3_temple" class="text-sm text-slate-700 leading-relaxed">
+                                        Accompagnement régulier de la famille pour les <strong>prières</strong>, les gestes de recueillement et l'utilisation de l'<strong>encens</strong>.
+                                    </p>
+                                </div>
+
+                                <div class="p-5 rounded-2xl bg-amber-50/70 border border-amber-200">
+                                    <div class="flex items-center gap-2.5 mb-2.5">
+                                        <span class="text-2xl">🕯️</span>
+                                        <h4 class="text-lg font-extrabold text-slate-900">Au cimetière (hommage aux ancêtres)</h4>
+                                    </div>
+                                    <p data-editable="c3_cimetiere" class="text-sm text-slate-700 leading-relaxed">
+                                        Rituels traditionnels consistant à <strong>brûler de faux billets</strong> et à déposer <strong>à manger et à boire sur la tombe</strong>.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 3 : Approche Rationnelle & Passion des Sciences -->
+                        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+                            <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+                                <div>
+                                    <span class="text-xs font-extrabold uppercase tracking-wider text-[#B45309]">Carte Approche Rationnelle & Passion des Sciences</span>
+                                    <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-0.5">Logique, Observation & Démarche Scientifique</h3>
+                                </div>
+                                <span class="px-3.5 py-1 rounded-full bg-[#1E40AF] text-white text-xs font-extrabold">Ingénierie Informatique</span>
+                            </div>
+
+                            <p data-editable="c3_science" class="text-sm sm:text-base text-slate-600 leading-relaxed mb-5">
+                                Une pensée guidée par la logique, l'observation et la démarche scientifique. Passion pour les grandes questions scientifiques — un socle qui m'a naturellement orienté vers l'<strong>ingénierie informatique</strong>.
+                            </p>
+
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center">
+                                    <div class="text-2xl mb-1.5">🔭</div>
+                                    <div class="text-xs sm:text-sm font-extrabold text-slate-900">Astronomie</div>
+                                </div>
+                                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center">
+                                    <div class="text-2xl mb-1.5">🌌</div>
+                                    <div class="text-xs sm:text-sm font-extrabold text-slate-900">Cosmologie</div>
+                                </div>
+                                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center">
+                                    <div class="text-2xl mb-1.5">⚛️</div>
+                                    <div class="text-xs sm:text-sm font-extrabold text-slate-900">Physique quantique</div>
+                                </div>
+                                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center">
+                                    <div class="text-2xl mb-1.5">📐</div>
+                                    <div class="text-xs sm:text-sm font-extrabold text-slate-900">Mathématiques</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            4: {
+                id: 4,
+                shortTitle: "04. Génération & Évolution",
+                color: "#5B21B6",
+                badge: "Bulle 04 • Génération & Évolution",
+                title: "Génération & Évolution",
+                subtitle: "Parcours scolaire, numérique et IA à gauche ; culture geek, gaming et réseaux sociaux à droite",
+                html: `
+                    <div style="--accent:#5B21B6;--soft:#DDD6FE" class="skin grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+                        <!-- COLONNE DE GAUCHE — Chronologie : Parcours Scolaire, Numérique & IA -->
+                        <div class="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200 shadow-sm">
+                            <div class="mb-6">
+                                <span class="text-xs font-extrabold uppercase tracking-wider text-[#5B21B6]">Chronologie</span>
+                                <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-0.5">Parcours Scolaire, Numérique & IA</h3>
+                            </div>
+
+                            <div class="relative border-l-4 border-[#5B21B6] ml-3.5 space-y-5 pl-6 py-1">
+                                <!-- 1. Années 2000–2010 -->
+                                <div class="relative bg-slate-50 border border-slate-200 rounded-2xl p-4">
+                                    <span class="absolute -left-[38px] top-4 w-7 h-7 rounded-full bg-[#5B21B6] text-white font-display font-extrabold text-xs flex items-center justify-center ring-4 ring-white">
+                                        1
+                                    </span>
+                                    <span class="text-xs font-extrabold uppercase text-[#5B21B6]">Années 2000–2010</span>
+                                    <h4 class="text-base font-extrabold text-slate-900 mt-0.5 mb-1">Enfance connectée</h4>
+                                    <p data-editable="c4_s1" class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                                        Arrivée des <strong>premiers téléphones portables</strong> et essor rapide des <strong>technologies numériques</strong> dans le quotidien.
+                                    </p>
+                                </div>
+
+                                <!-- 2. 2018–2021 -->
+                                <div class="relative bg-slate-50 border border-slate-200 rounded-2xl p-4">
+                                    <span class="absolute -left-[38px] top-4 w-7 h-7 rounded-full bg-[#5B21B6] text-white font-display font-extrabold text-xs flex items-center justify-center ring-4 ring-white">
+                                        2
+                                    </span>
+                                    <span class="text-xs font-extrabold uppercase text-[#5B21B6]">2018–2021</span>
+                                    <h4 class="text-base font-extrabold text-slate-900 mt-0.5 mb-1">Lycée, Réformes & Covid-19</h4>
+                                    <p data-editable="c4_s2" class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                                        Génération des réformes (brevet, baccalauréat, Parcoursup) et du confinement qui a touché mes deux années de lycée : <strong>baccalauréat obtenu sans passer d'examen final</strong>.
+                                    </p>
+                                </div>
+
+                                <!-- 3. 2021–Présent -->
+                                <div class="relative bg-slate-50 border border-slate-200 rounded-2xl p-4">
+                                    <span class="absolute -left-[38px] top-4 w-7 h-7 rounded-full bg-[#5B21B6] text-white font-display font-extrabold text-xs flex items-center justify-center ring-4 ring-white">
+                                        3
+                                    </span>
+                                    <span class="text-xs font-extrabold uppercase text-[#5B21B6]">2021–Présent</span>
+                                    <h4 class="text-base font-extrabold text-slate-900 mt-0.5 mb-1">Études Supérieures à CY Tech & IA</h4>
+                                    <p data-editable="c4_s3" class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                                        Entrée dans l'enseignement supérieur marquée par l'apparition des <strong>IA génératives grand public</strong> et la réforme du cursus à <strong>CY Tech</strong> (après un redoublement) en ingénierie informatique.
+                                    </p>
+                                </div>
+
+                                <!-- 4. Aujourd'hui -->
+                                <div class="relative bg-[#5B21B6] text-white rounded-2xl p-4">
+                                    <span class="absolute -left-[38px] top-4 w-7 h-7 rounded-full bg-white text-[#5B21B6] font-display font-extrabold text-xs flex items-center justify-center ring-4 ring-[#5B21B6]">
+                                        4
+                                    </span>
+                                    <span class="text-xs font-extrabold uppercase text-violet-200">Aujourd'hui</span>
+                                    <h4 class="text-base font-extrabold mt-0.5 mb-1">Alternance chez Schneider Electric</h4>
+                                    <p data-editable="c4_s4" class="text-xs sm:text-sm text-violet-100 leading-relaxed">
+                                        Installation en autonomie à <strong>Grenoble</strong> et immersion dans le monde professionnel.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- COLONNE DE DROITE — Culture Geek, Gaming & Réseaux Sociaux -->
+                        <div class="space-y-5">
+                            <!-- Parcours Jeux Vidéo -->
+                            <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-xs font-extrabold uppercase tracking-wider text-[#5B21B6]">Culture Geek & Gaming</span>
+                                    <span class="text-xl">🎮</span>
+                                </div>
+                                <h3 class="text-lg sm:text-xl font-extrabold text-slate-900 mb-3">Parcours Jeux Vidéo</h3>
+                                <div class="mb-4 p-3.5 rounded-2xl bg-[#5B21B6] text-white flex items-center gap-3">
+                                    <span class="text-2xl">🔥</span>
+                                    <p data-editable="c4_competitif" class="text-sm font-extrabold leading-snug">Un joueur <u>très compétitif</u>.</p>
+                                </div>
+
+                                <div class="space-y-3">
+                                    <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200">
+                                        <div class="flex items-center justify-between mb-1">
+                                            <span class="text-xs font-extrabold uppercase text-[#047857]">Premières aventures</span>
+                                            <span class="px-2.5 py-0.5 rounded-full bg-[#047857] text-white text-[11px] font-extrabold">Minecraft</span>
+                                        </div>
+                                        <p data-editable="c4_game1" class="text-xs sm:text-sm text-slate-700">
+                                            Premières aventures sur <strong>Minecraft</strong>, entre exploration, construction et parties partagées.
+                                        </p>
+                                    </div>
+
+                                    <div class="p-4 rounded-2xl bg-violet-50 border border-violet-200">
+                                        <div class="flex flex-wrap items-center justify-between gap-1 mb-1.5">
+                                            <span class="text-xs font-extrabold uppercase text-[#5B21B6]">Jeux compétitifs & Top Joueur</span>
+                                            <div class="flex flex-wrap gap-1">
+                                                <span class="px-2 py-0.5 rounded-full bg-[#5B21B6] text-white text-[10px] font-extrabold">League of Legends</span>
+                                                <span class="px-2 py-0.5 rounded-full bg-[#5B21B6] text-white text-[10px] font-extrabold">Counter-Strike / CS</span>
+                                                <span class="px-2 py-0.5 rounded-full bg-[#5B21B6] text-white text-[10px] font-extrabold">Rocket League</span>
+                                            </div>
+                                        </div>
+                                        <p data-editable="c4_game2" class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+                                            Joueur <strong>très compétitif</strong> : montée en puissance sur les jeux compétitifs (<strong>League of Legends</strong>, <strong>Counter-Strike / CS</strong>, <strong>Rocket League</strong>), et niveau <strong>top joueur</strong> sur <strong>Teeworlds / DDNet</strong> et <strong>Vermintide</strong>.
+                                        </p>
+                                        <div class="mt-2 flex flex-wrap gap-1.5">
+                                            <span class="px-2.5 py-0.5 rounded-lg bg-white border border-violet-300 text-[#5B21B6] text-[11px] font-extrabold">🏆 Top joueur Teeworlds / DDNet</span>
+                                            <span class="px-2.5 py-0.5 rounded-lg bg-white border border-violet-300 text-[#5B21B6] text-[11px] font-extrabold">🏆 Top joueur Vermintide</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="p-4 rounded-2xl bg-[#5B21B6] text-white">
+                                        <div class="flex items-center justify-between mb-1">
+                                            <span class="text-xs font-extrabold uppercase text-violet-200">Attente actuelle</span>
+                                            <span class="px-2.5 py-0.5 rounded-full bg-white text-[#5B21B6] text-[11px] font-extrabold">GTA VI</span>
+                                        </div>
+                                        <p data-editable="c4_game3" class="text-xs sm:text-sm text-violet-50">
+                                            Et l'attente autour de la sortie de <strong>GTA VI</strong>.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Réseaux Sociaux & Codes Générationnels -->
+                            <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
+                                <span class="text-xs font-extrabold uppercase tracking-wider text-[#5B21B6]">Codes Générationnels</span>
+                                <h3 class="text-lg sm:text-xl font-extrabold text-slate-900 mt-0.5 mb-2">Réseaux Sociaux & Codes Générationnels</h3>
+                                <p data-editable="c4_social" class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-3.5">
+                                    Pratique quotidienne d'<strong>Instagram</strong>, <strong>Snapchat</strong> et <strong>TikTok</strong> (humour, références partagées, communication instantanée).
+                                </p>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="px-3.5 py-1.5 rounded-xl bg-[#B91C1C] text-white text-xs font-extrabold">📸 Instagram</span>
+                                    <span class="px-3.5 py-1.5 rounded-xl bg-[#B45309] text-white text-xs font-extrabold">👻 Snapchat</span>
+                                    <span class="px-3.5 py-1.5 rounded-xl bg-[#5B21B6] text-white text-xs font-extrabold">🎵 TikTok</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            5: {
+                id: 5,
+                shortTitle: "05. Amis & Voyages",
+                color: "#047857",
+                badge: "Bulle 05 • Amis & Voyages",
+                title: "Amis & Voyages",
+                subtitle: "Diversité culturelle et religieuse de mes amis, notre culture commune et mes voyages marquants",
+                html: `
+                    <div class="space-y-6">
+                        <!-- Card 1 : Un Cercle d'Amis Multiculturel & Multiconfessionnel -->
+                        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-[#D1FAE5] shadow-sm space-y-5">
+                            <div>
+                                <span class="text-xs font-extrabold uppercase tracking-wider text-[#047857]">Card 1 • Cercle d'Amis</span>
+                                <h3 class="text-xl sm:text-2xl font-extrabold text-[#064E3B] mt-0.5 mb-2">Un Cercle d'Amis Multiculturel & Multiconfessionnel</h3>
+                                <p data-editable="c5_friends" class="text-sm sm:text-base text-[#065F46] leading-relaxed">
+                                    Grandir entouré d'amis aux histoires, origines et croyances si différentes m'a apporté chaque jour une ouverture naturelle sur d'autres façons de vivre et de penser.
+                                </p>
+                            </div>
+
+                            <!-- Groupe A : Origines & Cultures représentées -->
+                            <div class="p-4 sm:p-5 rounded-2xl bg-[#ECFDF5] border border-[#D1FAE5]">
+                                <div class="text-xs font-extrabold uppercase tracking-wider text-[#047857] mb-3">
+                                    Origines & Cultures représentées
+                                </div>
+                                <div class="flex flex-wrap gap-2.5">
+                                    <span class="px-3.5 py-2 rounded-xl bg-white border border-[#D1FAE5] text-[#064E3B] text-xs font-extrabold">🇪🇺 Européens</span>
+                                    <span class="px-3.5 py-2 rounded-xl bg-white border border-[#D1FAE5] text-[#064E3B] text-xs font-extrabold">🌏 Asiatiques de l'Est</span>
+                                    <span class="px-3.5 py-2 rounded-xl bg-white border border-[#D1FAE5] text-[#064E3B] text-xs font-extrabold">🇮🇳 Indiens</span>
+                                    <span class="px-3.5 py-2 rounded-xl bg-white border border-[#D1FAE5] text-[#064E3B] text-xs font-extrabold">🌍 Africains subsahariens</span>
+                                    <span class="px-3.5 py-2 rounded-xl bg-white border border-[#D1FAE5] text-[#064E3B] text-xs font-extrabold">🌙 Monde arabe</span>
+                                </div>
+                            </div>
+
+                            <!-- Groupe B : Religions & Convictions au sein de mes amis -->
+                            <div class="p-4 sm:p-5 rounded-2xl bg-[#ECFDF5] border border-[#D1FAE5]">
+                                <div class="text-xs font-extrabold uppercase tracking-wider text-[#047857] mb-3">
+                                    Religions & Convictions au sein de mes amis
+                                </div>
+                                <div class="flex flex-wrap gap-2.5">
+                                    <span class="px-3.5 py-2 rounded-xl bg-white border border-[#D1FAE5] text-[#064E3B] text-xs font-extrabold">🧭 Athées / Agnostiques</span>
+                                    <span class="px-3.5 py-2 rounded-xl bg-white border border-[#D1FAE5] text-[#064E3B] text-xs font-extrabold">✝️ Catholiques / Chrétiens</span>
+                                    <span class="px-3.5 py-2 rounded-xl bg-white border border-[#D1FAE5] text-[#064E3B] text-xs font-extrabold">☪️ Musulmans</span>
+                                    <span class="px-3.5 py-2 rounded-xl bg-white border border-[#D1FAE5] text-[#064E3B] text-xs font-extrabold">✡️ Juifs</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 2 : Notre Socle de Culture Commune (soft emerald & forest green #064E3B, zéro noir) -->
+                        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-[#D1FAE5] shadow-sm">
+                            <span class="text-xs font-extrabold uppercase tracking-wider text-[#047857]">Card 2 • Culture Partagée</span>
+                            <h3 class="text-xl sm:text-2xl font-extrabold text-[#064E3B] mt-0.5 mb-2">Notre Socle de Culture Commune</h3>
+                            <p data-editable="c5_socle_intro" class="text-sm text-[#065F46] leading-relaxed mb-5">
+                                Au-delà de nos origines et religions respectives, nous partageons une culture commune vivante — un mélange qui façonne notre façon de <strong>s'habiller, de parler et d'être</strong> :
+                            </p>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                                <div class="p-4 rounded-2xl bg-[#ECFDF5] border border-[#D1FAE5]">
+                                    <div class="text-xl mb-1.5">🎧</div>
+                                    <div class="text-xs font-extrabold text-[#064E3B]">Musique française</div>
+                                    <div class="text-[11px] text-[#065F46] mt-0.5">Pop, rap…</div>
+                                </div>
+                                <div class="p-4 rounded-2xl bg-[#ECFDF5] border border-[#D1FAE5]">
+                                    <div class="text-xl mb-1.5">🎬</div>
+                                    <div class="text-xs font-extrabold text-[#064E3B]">Cinéma & Séries</div>
+                                    <div class="text-[11px] text-[#065F46] mt-0.5">Œuvres et références partagées</div>
+                                </div>
+                                <div class="p-4 rounded-2xl bg-[#ECFDF5] border border-[#D1FAE5]">
+                                    <div class="text-xl mb-1.5">🎮</div>
+                                    <div class="text-xs font-extrabold text-[#064E3B]">Jeux vidéo</div>
+                                    <div class="text-[11px] text-[#065F46] mt-0.5">Sessions et compétition entre amis</div>
+                                </div>
+                                <div class="p-4 rounded-2xl bg-[#ECFDF5] border border-[#D1FAE5]">
+                                    <div class="text-xl mb-1.5">⚽</div>
+                                    <div class="text-xs font-extrabold text-[#064E3B]">Sports & Activités</div>
+                                    <div class="text-[11px] text-[#065F46] mt-0.5">Sports et activités collectives</div>
+                                </div>
+                                <div class="p-4 rounded-2xl bg-[#064E3B] text-white">
+                                    <div class="text-xl mb-1.5">👟</div>
+                                    <div class="text-xs font-extrabold">Style & Attitude</div>
+                                    <div class="text-[11px] text-[#D1FAE5] mt-0.5">Façon de s'habiller, de parler et d'être</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 3 : Mes Voyages & Découvertes Culturelles -->
+                        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-[#D1FAE5] shadow-sm">
+                            <span class="text-xs font-extrabold uppercase tracking-wider text-[#047857]">Card 3 • Ouverture sur le Monde</span>
+                            <h3 class="text-xl sm:text-2xl font-extrabold text-[#064E3B] mt-0.5 mb-5">Mes Voyages & Découvertes Culturelles</h3>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                                <!-- Bloc 1 : Europe -->
+                                <div class="p-5 rounded-2xl bg-[#ECFDF5] border border-[#D1FAE5] flex flex-col justify-between">
+                                    <div>
+                                        <span class="inline-block px-3 py-1 rounded-full bg-[#D1FAE5] text-[#064E3B] text-[11px] font-extrabold uppercase tracking-wider mb-2.5">
+                                            Voisinage Européen
+                                        </span>
+                                        <h4 class="text-base sm:text-lg font-extrabold text-[#064E3B] mb-2">Europe</h4>
+                                        <p data-editable="c5_eu" class="text-xs sm:text-sm text-[#065F46] leading-relaxed mb-4">
+                                            Découverte de cultures voisines, de l'art de vivre méditerranéen et d'autres langues européennes.
+                                        </p>
+                                    </div>
+                                    <div class="flex flex-wrap gap-1.5">
+                                        <span class="px-2.5 py-1 rounded-lg bg-white border border-[#D1FAE5] text-[#064E3B] text-xs font-extrabold">🇪🇸 Espagne</span>
+                                        <span class="px-2.5 py-1 rounded-lg bg-white border border-[#D1FAE5] text-[#064E3B] text-xs font-extrabold">🇵🇹 Portugal</span>
+                                        <span class="px-2.5 py-1 rounded-lg bg-white border border-[#D1FAE5] text-[#064E3B] text-xs font-extrabold">🇭🇷 Croatie…</span>
+                                    </div>
+                                </div>
+
+                                <!-- Bloc 2 : Maroc -->
+                                <div class="p-5 rounded-2xl bg-[#ECFDF5] border border-[#D1FAE5] flex flex-col justify-between">
+                                    <div>
+                                        <span class="inline-block px-3 py-1 rounded-full bg-[#047857] text-white text-[11px] font-extrabold uppercase tracking-wider mb-2.5">
+                                            Premier Dépaysement
+                                        </span>
+                                        <h4 class="text-base sm:text-lg font-extrabold text-[#064E3B] mb-2">🇲🇦 Maroc</h4>
+                                        <p data-editable="c5_maroc" class="text-xs sm:text-sm text-[#065F46] leading-relaxed mb-4">
+                                            Court séjour offrant un premier dépaysement fort : architecture, hospitalité, traditions, religion et gastronomie.
+                                        </p>
+                                    </div>
+                                    <div class="flex flex-wrap gap-1.5">
+                                        <span class="px-2.5 py-1 rounded-lg bg-white border border-[#D1FAE5] text-[#064E3B] text-xs font-extrabold">🕌 Architecture & Traditions</span>
+                                        <span class="px-2.5 py-1 rounded-lg bg-white border border-[#D1FAE5] text-[#064E3B] text-xs font-extrabold">🫖 Hospitalité</span>
+                                    </div>
+                                </div>
+
+                                <!-- Bloc 3 : Thaïlande (Vert forêt foncé #064E3B) -->
+                                <div class="p-5 rounded-2xl bg-[#064E3B] text-white flex flex-col justify-between">
+                                    <div>
+                                        <span class="inline-block px-3 py-1 rounded-full bg-[#047857] text-white text-[11px] font-extrabold uppercase tracking-wider mb-2.5">
+                                            Immersion Profonde
+                                        </span>
+                                        <h4 class="text-base sm:text-lg font-extrabold mb-2">🇹🇭 Thaïlande</h4>
+                                        <p data-editable="c5_thailande" class="text-xs sm:text-sm text-[#D1FAE5] leading-relaxed mb-4">
+                                            Immersion profonde en Asie du Sud-Est, très dépaysante sur les plans de la <strong class="text-white">religion</strong>, de l'<strong class="text-white">art</strong>, de la <strong class="text-white">cuisine</strong>, des <strong class="text-white">valeurs</strong> et des <strong class="text-white">manières de penser et d'être</strong>.
+                                        </p>
+                                    </div>
+                                    <div class="flex flex-wrap gap-1.5">
+                                        <span class="px-2.5 py-1 rounded-lg bg-[#065F46] border border-[#047857] text-white text-xs font-extrabold">🛕 Religion & Art</span>
+                                        <span class="px-2.5 py-1 rounded-lg bg-[#065F46] border border-[#047857] text-white text-xs font-extrabold">🧭 Penser & Être</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            }
+        };
+
+        // =========================================================================
+        // 2. GESTION DU LECTEUR AUDIO (MP3 + DATA URL EXPORT + FALLBACK WEB AUDIO)
+        // =========================================================================
+        let isMusicPlaying = false;
+        let usingSynthFallback = false;
+        let embeddedAudioDataUrl = null;
+        let audioCtx = null;
+        let synthGain = null;
+        let synthInterval = null;
+        let synthStep = 0;
+
+        // Ambiance chill : accords doux (Do maj7 · La m7 · Fa maj7 · Sol 6), une mesure toutes les 8 secondes
+        const chillChords = [
+            [130.81, 196.00, 246.94, 329.63], // Cmaj7
+            [110.00, 164.81, 196.00, 261.63], // Am7
+            [87.31, 130.81, 164.81, 220.00],  // Fmaj7
+            [98.00, 146.83, 246.94, 329.63]   // G6
+        ];
+        const chillScale = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25]; // gamme pentatonique douce
+        let synthBus = null;
+
+        function setPlayerUIState(playing, labelText) {
+            isMusicPlaying = playing;
+            const box = document.getElementById('music-player-box');
+            const playIcon = document.getElementById('music-icon-play');
+            const pauseIcon = document.getElementById('music-icon-pause');
+            const statusText = document.getElementById('music-status-text');
+
+            if (playing) {
+                box.classList.add('is-playing');
+                playIcon.classList.add('hidden');
+                pauseIcon.classList.remove('hidden');
+                pauseIcon.classList.add('flex');
+            } else {
+                box.classList.remove('is-playing');
+                playIcon.classList.remove('hidden');
+                pauseIcon.classList.add('hidden');
+                pauseIcon.classList.remove('flex');
+            }
+
+            if (labelText && statusText) {
+                statusText.textContent = labelText;
+            }
+        }
+
+        function startSynthMusic() {
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContextClass) return;
+
+            if (!audioCtx) {
+                audioCtx = new AudioContextClass();
+                synthGain = audioCtx.createGain();
+                const vol = parseFloat(document.getElementById('music-volume').value || '0.45');
+                synthGain.gain.value = vol * 0.22;
+                synthGain.connect(audioCtx.destination);
+            }
+
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            stopSynthMusic();
+            usingSynthFallback = true;
+            synthStep = 0;
+
+            // Chaîne sonore : bus -> filtre doux -> volume général, avec un écho lent pour l'ambiance
+            const bus = audioCtx.createGain();
+            const tone = audioCtx.createBiquadFilter();
+            tone.type = 'lowpass';
+            tone.frequency.value = 1300;
+            tone.Q.value = 0.4;
+            const echo = audioCtx.createDelay(1.5);
+            echo.delayTime.value = 0.46;
+            const feedback = audioCtx.createGain();
+            feedback.gain.value = 0.38;
+            const echoTone = audioCtx.createBiquadFilter();
+            echoTone.type = 'lowpass';
+            echoTone.frequency.value = 1500;
+            const wet = audioCtx.createGain();
+            wet.gain.value = 0.5;
+            bus.connect(tone);
+            tone.connect(synthGain);
+            tone.connect(echo);
+            echo.connect(echoTone);
+            echoTone.connect(feedback);
+            feedback.connect(echo);
+            echoTone.connect(wet);
+            wet.connect(synthGain);
+            synthBus = { bus: bus, nodes: [bus, tone, echo, feedback, echoTone, wet] };
+
+            const playTone = (freq, t0, dur, peak, type, attack, release) => {
+                const osc = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.value = freq;
+                osc.detune.value = (Math.random() - 0.5) * 8;
+                g.gain.setValueAtTime(0.0001, t0);
+                g.gain.linearRampToValueAtTime(peak, t0 + attack);
+                g.gain.setValueAtTime(peak, t0 + dur - release);
+                g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+                osc.connect(g);
+                g.connect(bus);
+                osc.start(t0);
+                osc.stop(t0 + dur + 0.1);
+            };
+
+            const playBar = () => {
+                if (!isMusicPlaying || !usingSynthFallback || !audioCtx || !synthBus) return;
+                const t = audioCtx.currentTime + 0.05;
+                const chord = chillChords[synthStep % chillChords.length];
+
+                // Nappe lente qui se fond dans l'accord suivant
+                chord.forEach(f => {
+                    playTone(f, t, 11, 0.15, 'triangle', 2.5, 3.2);
+                    playTone(f * 2, t + 0.1, 11, 0.035, 'sine', 3, 3.2);
+                });
+
+                // Trois notes douces et espacées
+                let when = 1.2 + Math.random();
+                for (let i = 0; i < 3; i++) {
+                    const f = chillScale[Math.floor(Math.random() * chillScale.length)];
+                    playTone(f, t + when, 3, 0.1, 'sine', 0.04, 2.8);
+                    when += 1.6 + Math.random() * 1.6;
+                }
+                synthStep++;
+            };
+
+            setPlayerUIState(true, 'Ambiance chill');
+            playBar();
+            synthInterval = setInterval(playBar, 8000);
+        }
+
+        function stopSynthMusic() {
+            if (synthInterval) {
+                clearInterval(synthInterval);
+                synthInterval = null;
+            }
+            // Fondu de sortie rapide pour couper proprement les nappes en cours
+            if (synthBus && audioCtx) {
+                const old = synthBus;
+                synthBus = null;
+                old.bus.gain.cancelScheduledValues(audioCtx.currentTime);
+                old.bus.gain.setTargetAtTime(0, audioCtx.currentTime, 0.12);
+                setTimeout(() => {
+                    old.nodes.forEach(n => { try { n.disconnect(); } catch (e) {} });
+                }, 1200);
+            }
+        }
+
+        function toggleMusic() {
+            const bgMusic = document.getElementById('bg-music');
+            const vol = parseFloat(document.getElementById('music-volume').value || '0.45');
+            bgMusic.volume = vol;
+
+            if (isMusicPlaying) {
+                bgMusic.pause();
+                stopSynthMusic();
+                setPlayerUIState(false);
+                return;
+            }
+
+            // Si un fichier MP3 personnalisé a été chargé, on le lit directement
+            if (embeddedAudioDataUrl) {
+                usingSynthFallback = false;
+                stopSynthMusic();
+                bgMusic.play().then(() => {
+                    setPlayerUIState(true, 'MP3 chargé');
+                }).catch(() => {
+                    startSynthMusic();
+                });
+                return;
+            }
+
+            // Sinon, on tente musique.mp3 (pour GitHub Pages), avec fallback acoustique automatique
+            const playPromise = bgMusic.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    usingSynthFallback = false;
+                    stopSynthMusic();
+                    setPlayerUIState(true, 'musique.mp3');
+                }).catch(() => {
+                    startSynthMusic();
+                });
+            } else {
+                startSynthMusic();
+            }
+        }
+
+        function updateVolume(val) {
+            const num = parseFloat(val);
+            const bgMusic = document.getElementById('bg-music');
+            bgMusic.volume = num;
+            if (synthGain && audioCtx) {
+                synthGain.gain.setTargetAtTime(num * 0.22, audioCtx.currentTime, 0.05);
+            }
+        }
+
+        function handleMp3Upload(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                embeddedAudioDataUrl = e.target.result;
+                const bgMusic = document.getElementById('bg-music');
+                bgMusic.src = embeddedAudioDataUrl;
+                bgMusic.volume = parseFloat(document.getElementById('music-volume').value || '0.45');
+
+                usingSynthFallback = false;
+                stopSynthMusic();
+
+                bgMusic.play().then(() => {
+                    setPlayerUIState(true, 'MP3 chargé');
+                    showToast(`Musique « ${file.name} » chargée (sera incluse dans l'export .html) !`);
+                }).catch(() => {
+                    setPlayerUIState(false, 'MP3 prêt');
+                    showToast(`Musique « ${file.name} » prête : cliquez sur Play.`);
+                });
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // =========================================================================
+        // 3. GESTION DES BULLES, DE L'ÉDITION ET DE L'EXPORT GITHUB PAGES
+        // =========================================================================
+        const STORAGE_KEY = 'portrait_culturel_5bulles_v5';
+        let savedEdits = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+        let activeBubbleId = 1;
+        let isEditMode = false;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            applySavedEdits();
+            const bgMusic = document.getElementById('bg-music');
+            bgMusic.volume = parseFloat(document.getElementById('music-volume').value || '0.45');
+            // Si la page exportée contient déjà une Data URL audio embarquée
+            if (bgMusic.getAttribute('src') && bgMusic.getAttribute('src').startsWith('data:audio')) {
+                embeddedAudioDataUrl = bgMusic.getAttribute('src');
+            }
+        });
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        function applySavedEdits() {
+            document.querySelectorAll('[data-editable]').forEach(el => {
+                const key = el.getAttribute('data-editable');
+                if (savedEdits[key] !== undefined) {
+                    el.innerHTML = savedEdits[key];
+                }
+            });
+        }
+
+        function toggleEditMode() {
+            isEditMode = !isEditMode;
+            const btn = document.getElementById('edit-btn');
+            const label = document.getElementById('edit-btn-label');
+
+            if (isEditMode) {
+                document.body.classList.add('edit-mode');
+                label.textContent = 'Terminer';
+                btn.classList.remove('bg-white', 'text-slate-700', 'border-slate-300');
+                btn.classList.add('bg-amber-400', 'text-slate-950', 'border-amber-500');
+                enableEditableFields();
+                showToast('Mode Édition activé : cliquez sur un texte pour le modifier.');
+            } else {
+                document.body.classList.remove('edit-mode');
+                label.textContent = 'Mode Édition';
+                btn.classList.add('bg-white', 'text-slate-700', 'border-slate-300');
+                btn.classList.remove('bg-amber-400', 'text-slate-950', 'border-amber-500');
+                disableEditableFields();
+                showToast('Modifications enregistrées !');
+            }
+        }
+
+        function enableEditableFields() {
+            document.querySelectorAll('[data-editable]').forEach(el => {
+                el.setAttribute('contenteditable', 'true');
+                el.oninput = () => {
+                    const key = el.getAttribute('data-editable');
+                    savedEdits[key] = el.innerHTML;
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(savedEdits));
+                };
+            });
+        }
+
+        function disableEditableFields() {
+            document.querySelectorAll('[data-editable]').forEach(el => {
+                el.removeAttribute('contenteditable');
+            });
+        }
+
+        function handleBubbleClick(event, id) {
+            if (isEditMode && event.target.closest('[data-editable]')) {
+                return;
+            }
+            expandBubble(id, event.currentTarget);
+        }
+
+        function expandBubble(id, bubbleEl) {
+            const data = bubblesContent[id];
+            const morph = document.getElementById('bubble-morph-circle');
+            const rect = bubbleEl.getBoundingClientRect();
+
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            const maxRadius = Math.hypot(
+                Math.max(centerX, window.innerWidth - centerX),
+                Math.max(centerY, window.innerHeight - centerY)
+            );
+            const diameter = maxRadius * 2.1;
+
+            morph.style.backgroundColor = data.color;
+            morph.style.left = `${centerX}px`;
+            morph.style.top = `${centerY}px`;
+            morph.style.width = `${diameter}px`;
+            morph.style.height = `${diameter}px`;
+            morph.classList.remove('expanding');
+            void morph.offsetWidth;
+            morph.classList.add('expanding');
+
+            populateFullscreenView(id);
+
+            setTimeout(() => {
+                const fsView = document.getElementById('fullscreen-view');
+                fsView.classList.add('active');
+                fsView.scrollTop = 0;
+            }, 220);
+
+            setTimeout(() => {
+                morph.classList.remove('expanding');
+            }, 540);
+        }
+
+        function switchBubble(id) {
+            populateFullscreenView(id);
+            const fsView = document.getElementById('fullscreen-view');
+            fsView.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function populateFullscreenView(id) {
+            activeBubbleId = id;
+            const data = bubblesContent[id];
+
+            document.getElementById('fs-banner').style.backgroundColor = data.color;
+            document.getElementById('fs-badge').textContent = data.badge;
+            document.getElementById('fs-title').textContent = data.title;
+            document.getElementById('fs-subtitle').textContent = data.subtitle;
+            document.getElementById('fs-content').innerHTML = data.html;
+            document.getElementById('fs-next-btn').style.backgroundColor = data.color;
+
+            for (let i = 1; i <= 5; i++) {
+                const pill = document.getElementById(`nav-pill-${i}`);
+                if (i === id) {
+                    pill.className = 'px-3 py-1.5 rounded-full text-xs font-extrabold bg-white text-slate-900 shadow-xs transition-all cursor-pointer shrink-0';
+                } else {
+                    pill.className = 'px-3 py-1.5 rounded-full text-xs font-bold bg-white/15 text-white hover:bg-white/25 transition-all cursor-pointer shrink-0';
+                }
+            }
+
+            const prevId = id === 1 ? 5 : id - 1;
+            const nextId = id === 5 ? 1 : id + 1;
+            document.getElementById('fs-prev-label').textContent = bubblesContent[prevId].shortTitle;
+            document.getElementById('fs-next-label').textContent = bubblesContent[nextId].shortTitle;
+
+            applySavedEdits();
+            if (isEditMode) enableEditableFields();
+        }
+
+        function stepBubble(direction) {
+            let next = activeBubbleId + direction;
+            if (next < 1) next = 5;
+            if (next > 5) next = 1;
+            switchBubble(next);
+        }
+
+        function closeBubbleView() {
+            document.getElementById('fullscreen-view').classList.remove('active');
+        }
+
+        document.addEventListener('keydown', (e) => {
+            const isOpen = document.getElementById('fullscreen-view').classList.contains('active');
+            if (!isOpen) return;
+
+            if (e.key === 'Escape') {
+                closeBubbleView();
+            } else if (!isEditMode && e.key === 'ArrowRight') {
+                stepBubble(1);
+            } else if (!isEditMode && e.key === 'ArrowLeft') {
+                stepBubble(-1);
+            }
+        });
+
+        function downloadStandaloneHTML() {
+            const clone = document.documentElement.cloneNode(true);
+
+            clone.querySelector('body').classList.remove('edit-mode');
+            const fsView = clone.querySelector('#fullscreen-view');
+            if (fsView) fsView.classList.remove('active');
+            const morph = clone.querySelector('#bubble-morph-circle');
+            if (morph) morph.classList.remove('expanding');
+            clone.querySelectorAll('[data-editable]').forEach(el => el.removeAttribute('contenteditable'));
+
+            // Réinitialise l'état visuel du lecteur audio dans l'export
+            const playerBox = clone.querySelector('#music-player-box');
+            if (playerBox) playerBox.classList.remove('is-playing');
+            const playIcon = clone.querySelector('#music-icon-play');
+            if (playIcon) playIcon.classList.remove('hidden');
+            const pauseIcon = clone.querySelector('#music-icon-pause');
+            if (pauseIcon) {
+                pauseIcon.classList.add('hidden');
+                pauseIcon.classList.remove('flex');
+            }
+
+            // Si l'utilisateur a importé un MP3, on l'embarque directement en Data URL
+            const audioEl = clone.querySelector('#bg-music');
+            if (audioEl) {
+                if (embeddedAudioDataUrl) {
+                    audioEl.setAttribute('src', embeddedAudioDataUrl);
+                } else {
+                    audioEl.setAttribute('src', 'musique.mp3');
+                }
+            }
+
+            clone.querySelectorAll('script').forEach(script => {
+                if (script.textContent.includes('let savedEdits =')) {
+                    script.textContent = script.textContent.replace(
+                        /let savedEdits = JSON\.parse\(localStorage\.getItem\(STORAGE_KEY\)\) \|\| \{\};/,
+                        `let savedEdits = ${JSON.stringify(savedEdits)};`
+                    );
+                }
+            });
+
+            const finalHTML = '<!DOCTYPE html>\n' + clone.outerHTML;
+            const blob = new Blob([finalHTML], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'index.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            if (embeddedAudioDataUrl) {
+                showToast('index.html téléchargé avec votre musique MP3 embarquée !');
+            } else {
+                showToast('index.html téléchargé (placez musique.mp3 à côté sur GitHub Pages) !');
+            }
+        }
+    </script>
+</body>
+</html>
