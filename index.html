@@ -329,29 +329,6 @@
         }
 
         /* ===================================================================== */
-        /* MODE ÉDITION EN DIRECT (CONTENTEDITABLE)                              */
-        /* ===================================================================== */
-        body.edit-mode [data-editable] {
-            outline: 2px dashed rgba(255, 255, 255, 0.85);
-            outline-offset: 3px;
-            border-radius: 6px;
-            cursor: text;
-        }
-
-        body.edit-mode header [data-editable],
-        body.edit-mode #fs-content [data-editable] {
-            outline: 2px dashed #64748B;
-            background-color: #FEF9C3;
-            color: #0F172A;
-        }
-
-        body.edit-mode [data-editable]:focus {
-            outline: 2px solid #0F172A;
-            background-color: #FFFFFF;
-            color: #0F172A;
-        }
-    
-        /* ===================================================================== */
         /* FINITION DES BULLES ET DES CARTES (couleurs unies, sans dégradé)       */
         /* ===================================================================== */
         .culture-bubble {
@@ -442,7 +419,7 @@
     <audio id="bg-music" loop preload="auto" src="musique.mp3"></audio>
 
     <!-- ===================================================================== -->
-    <!-- BARRE SUPÉRIEURE ÉPURÉE (TITRE + LECTEUR AUDIO + ÉDITION + EXPORT)    -->
+    <!-- BARRE SUPÉRIEURE ÉPURÉE (TITRE + VOLUME DE LA MUSIQUE)                -->
     <!-- ===================================================================== -->
     <header class="w-full px-4 sm:px-8 py-3 flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 bg-[#F8FAFC] sticky top-0 z-30">
         <!-- Titre à gauche -->
@@ -458,66 +435,25 @@
             </div>
         </div>
 
-        <!-- Contrôles à droite : Lecteur Musique + Mode Édition + Télécharger (.html) -->
+        <!-- Contrôle à droite : volume de la musique de fond -->
         <div class="flex flex-wrap items-center gap-2">
-            <!-- 1. Lecteur musique de fond -->
-            <div id="music-player-box" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-slate-300 shadow-2xs">
-                <button id="music-toggle-btn" onclick="toggleMusic()" title="Lecture / Pause musique de fond" class="flex items-center gap-1.5 text-xs font-extrabold text-slate-800 hover:text-[#1E40AF] transition-colors cursor-pointer">
-                    <span id="music-icon-play" class="flex items-center justify-center w-5 h-5 rounded-full bg-[#1E40AF] text-white">
-                        <svg class="w-2.5 h-2.5 ml-0.5" viewBox="0 0 24 24" fill="currentColor">
-                            <polygon points="5 3 19 12 5 21 5 3"/>
-                        </svg>
-                    </span>
-                    <span id="music-icon-pause" class="hidden items-center justify-center w-5 h-5 rounded-full bg-[#047857] text-white">
-                        <svg class="w-2.5 h-2.5" viewBox="0 0 24 24" fill="currentColor">
-                            <rect x="6" y="4" width="4" height="16"/>
-                            <rect x="14" y="4" width="4" height="16"/>
-                        </svg>
-                    </span>
-
-                    <!-- Petites barres d'égaliseur animées -->
-                    <span class="flex items-end gap-0.5 h-3.5 px-0.5" aria-hidden="true">
-                        <span class="eq-bar"></span>
-                        <span class="eq-bar"></span>
-                        <span class="eq-bar"></span>
-                        <span class="eq-bar"></span>
-                    </span>
-                    <span id="music-status-text" class="hidden md:inline text-[11px] font-bold text-slate-700">Musique</span>
-                </button>
-
-                <!-- Réglage du volume -->
-                <input id="music-volume" type="range" min="0" max="1" step="0.02" value="0.45" oninput="updateVolume(this.value)" title="Volume de la musique" class="volume-slider w-14 sm:w-16">
-
-                <!-- Bouton Charger .mp3 -->
-                <label for="mp3-file-input" title="Importer votre fichier .mp3 pour le tester et l'embarquer à l'export" class="flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-extrabold transition-colors cursor-pointer">
-                    <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M9 18V5l12-2v13"/>
-                        <circle cx="6" cy="18" r="3"/>
-                        <circle cx="18" cy="16" r="3"/>
-                    </svg>
-                    <span>Charger .mp3</span>
-                </label>
-                <input id="mp3-file-input" type="file" accept="audio/*" onchange="handleMp3Upload(event)" class="hidden">
+            <!-- Musique de fond : lancée automatiquement, seul le volume se règle -->
+            <div id="music-player-box" class="flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-white border border-slate-300 shadow-2xs">
+                <svg class="w-4 h-4 text-[#1E40AF] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M11 5 6 9H2v6h4l5 4V5Z"/>
+                    <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+                </svg>
+                <!-- Petites barres d'égaliseur animées -->
+                <span class="flex items-end gap-0.5 h-3.5 px-0.5" aria-hidden="true">
+                    <span class="eq-bar"></span>
+                    <span class="eq-bar"></span>
+                    <span class="eq-bar"></span>
+                    <span class="eq-bar"></span>
+                </span>
+                <span class="hidden md:inline text-[11px] font-bold text-slate-700">Musique</span>
+                <input id="music-volume" type="range" min="0" max="1" step="0.02" value="0.45" oninput="updateVolume(this.value)" title="Volume de la musique" aria-label="Volume de la musique" class="volume-slider w-20 sm:w-24">
             </div>
-
-            <!-- 2. Bouton Mode Édition -->
-            <button id="edit-btn" onclick="toggleEditMode()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-bold bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer">
-                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
-                    <path d="m15 5 4 4"/>
-                </svg>
-                <span id="edit-btn-label">Mode Édition</span>
-            </button>
-
-            <!-- 3. Bouton Télécharger (.html) -->
-            <button onclick="downloadStandaloneHTML()" class="flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold bg-slate-900 text-white hover:bg-slate-800 transition-colors cursor-pointer">
-                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" x2="12" y1="15" y2="3"/>
-                </svg>
-                <span>Télécharger (.html)</span>
-            </button>
         </div>
     </header>
 
@@ -713,12 +649,7 @@
         </div>
     </div>
 
-    <!-- Notification Toast discrète -->
-    <div id="toast" class="fixed bottom-5 right-5 z-50 bg-slate-900 text-white px-4 py-2.5 rounded-full text-xs font-bold shadow-xl border border-white/15 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
-        Action effectuée
-    </div>
-
-    <script>
+        <script>
         // =========================================================================
         // 1. DONNÉES GRAPHIQUES DES 5 BULLES (ZÉRO JARGON, COULEURS UNIES)
         // =========================================================================
@@ -1539,306 +1470,41 @@
         };
 
         // =========================================================================
-        // 2. GESTION DU LECTEUR AUDIO (MP3 + DATA URL EXPORT + FALLBACK WEB AUDIO)
+        // 2. MUSIQUE DE FOND (musique.mp3, à la racine du site, lancée automatiquement)
         // =========================================================================
-        let isMusicPlaying = false;
-        let usingSynthFallback = false;
-        let embeddedAudioDataUrl = null;
-        let audioCtx = null;
-        let synthGain = null;
-        let synthInterval = null;
-        let synthStep = 0;
-
-        // Ambiance chill : accords doux (Do maj7 · La m7 · Fa maj7 · Sol 6), une mesure toutes les 8 secondes
-        const chillChords = [
-            [130.81, 196.00, 246.94, 329.63], // Cmaj7
-            [110.00, 164.81, 196.00, 261.63], // Am7
-            [87.31, 130.81, 164.81, 220.00],  // Fmaj7
-            [98.00, 146.83, 246.94, 329.63]   // G6
-        ];
-        const chillScale = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25]; // gamme pentatonique douce
-        let synthBus = null;
-
-        function setPlayerUIState(playing, labelText) {
-            isMusicPlaying = playing;
-            const box = document.getElementById('music-player-box');
-            const playIcon = document.getElementById('music-icon-play');
-            const pauseIcon = document.getElementById('music-icon-pause');
-            const statusText = document.getElementById('music-status-text');
-
-            if (playing) {
-                box.classList.add('is-playing');
-                playIcon.classList.add('hidden');
-                pauseIcon.classList.remove('hidden');
-                pauseIcon.classList.add('flex');
-            } else {
-                box.classList.remove('is-playing');
-                playIcon.classList.remove('hidden');
-                pauseIcon.classList.add('hidden');
-                pauseIcon.classList.remove('flex');
-            }
-
-            if (labelText && statusText) {
-                statusText.textContent = labelText;
-            }
-        }
-
-        function startSynthMusic() {
-            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-            if (!AudioContextClass) return;
-
-            if (!audioCtx) {
-                audioCtx = new AudioContextClass();
-                synthGain = audioCtx.createGain();
-                const vol = parseFloat(document.getElementById('music-volume').value || '0.45');
-                synthGain.gain.value = vol * 0.22;
-                synthGain.connect(audioCtx.destination);
-            }
-
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-
-            stopSynthMusic();
-            usingSynthFallback = true;
-            synthStep = 0;
-
-            // Chaîne sonore : bus -> filtre doux -> volume général, avec un écho lent pour l'ambiance
-            const bus = audioCtx.createGain();
-            const tone = audioCtx.createBiquadFilter();
-            tone.type = 'lowpass';
-            tone.frequency.value = 1300;
-            tone.Q.value = 0.4;
-            const echo = audioCtx.createDelay(1.5);
-            echo.delayTime.value = 0.46;
-            const feedback = audioCtx.createGain();
-            feedback.gain.value = 0.38;
-            const echoTone = audioCtx.createBiquadFilter();
-            echoTone.type = 'lowpass';
-            echoTone.frequency.value = 1500;
-            const wet = audioCtx.createGain();
-            wet.gain.value = 0.5;
-            bus.connect(tone);
-            tone.connect(synthGain);
-            tone.connect(echo);
-            echo.connect(echoTone);
-            echoTone.connect(feedback);
-            feedback.connect(echo);
-            echoTone.connect(wet);
-            wet.connect(synthGain);
-            synthBus = { bus: bus, nodes: [bus, tone, echo, feedback, echoTone, wet] };
-
-            const playTone = (freq, t0, dur, peak, type, attack, release) => {
-                const osc = audioCtx.createOscillator();
-                const g = audioCtx.createGain();
-                osc.type = type;
-                osc.frequency.value = freq;
-                osc.detune.value = (Math.random() - 0.5) * 8;
-                g.gain.setValueAtTime(0.0001, t0);
-                g.gain.linearRampToValueAtTime(peak, t0 + attack);
-                g.gain.setValueAtTime(peak, t0 + dur - release);
-                g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
-                osc.connect(g);
-                g.connect(bus);
-                osc.start(t0);
-                osc.stop(t0 + dur + 0.1);
-            };
-
-            const playBar = () => {
-                if (!isMusicPlaying || !usingSynthFallback || !audioCtx || !synthBus) return;
-                const t = audioCtx.currentTime + 0.05;
-                const chord = chillChords[synthStep % chillChords.length];
-
-                // Nappe lente qui se fond dans l'accord suivant
-                chord.forEach(f => {
-                    playTone(f, t, 11, 0.15, 'triangle', 2.5, 3.2);
-                    playTone(f * 2, t + 0.1, 11, 0.035, 'sine', 3, 3.2);
-                });
-
-                // Trois notes douces et espacées
-                let when = 1.2 + Math.random();
-                for (let i = 0; i < 3; i++) {
-                    const f = chillScale[Math.floor(Math.random() * chillScale.length)];
-                    playTone(f, t + when, 3, 0.1, 'sine', 0.04, 2.8);
-                    when += 1.6 + Math.random() * 1.6;
-                }
-                synthStep++;
-            };
-
-            setPlayerUIState(true, 'Ambiance chill');
-            playBar();
-            synthInterval = setInterval(playBar, 8000);
-        }
-
-        function stopSynthMusic() {
-            if (synthInterval) {
-                clearInterval(synthInterval);
-                synthInterval = null;
-            }
-            // Fondu de sortie rapide pour couper proprement les nappes en cours
-            if (synthBus && audioCtx) {
-                const old = synthBus;
-                synthBus = null;
-                old.bus.gain.cancelScheduledValues(audioCtx.currentTime);
-                old.bus.gain.setTargetAtTime(0, audioCtx.currentTime, 0.12);
-                setTimeout(() => {
-                    old.nodes.forEach(n => { try { n.disconnect(); } catch (e) {} });
-                }, 1200);
-            }
-        }
-
-        function toggleMusic() {
-            const bgMusic = document.getElementById('bg-music');
-            const vol = parseFloat(document.getElementById('music-volume').value || '0.45');
-            bgMusic.volume = vol;
-
-            if (isMusicPlaying) {
-                bgMusic.pause();
-                stopSynthMusic();
-                setPlayerUIState(false);
-                return;
-            }
-
-            // Si un fichier MP3 personnalisé a été chargé, on le lit directement
-            if (embeddedAudioDataUrl) {
-                usingSynthFallback = false;
-                stopSynthMusic();
-                bgMusic.play().then(() => {
-                    setPlayerUIState(true, 'MP3 chargé');
-                }).catch(() => {
-                    startSynthMusic();
-                });
-                return;
-            }
-
-            // Sinon, on tente musique.mp3 (pour GitHub Pages), avec fallback acoustique automatique
-            const playPromise = bgMusic.play();
-            if (playPromise !== undefined) {
-                playPromise.then(() => {
-                    usingSynthFallback = false;
-                    stopSynthMusic();
-                    setPlayerUIState(true, 'musique.mp3');
-                }).catch(() => {
-                    startSynthMusic();
-                });
-            } else {
-                startSynthMusic();
-            }
-        }
-
         function updateVolume(val) {
-            const num = parseFloat(val);
-            const bgMusic = document.getElementById('bg-music');
-            bgMusic.volume = num;
-            if (synthGain && audioCtx) {
-                synthGain.gain.setTargetAtTime(num * 0.22, audioCtx.currentTime, 0.05);
-            }
+            document.getElementById('bg-music').volume = parseFloat(val);
         }
 
-        function handleMp3Upload(event) {
-            const file = event.target.files && event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                embeddedAudioDataUrl = e.target.result;
-                const bgMusic = document.getElementById('bg-music');
-                bgMusic.src = embeddedAudioDataUrl;
-                bgMusic.volume = parseFloat(document.getElementById('music-volume').value || '0.45');
-
-                usingSynthFallback = false;
-                stopSynthMusic();
-
-                bgMusic.play().then(() => {
-                    setPlayerUIState(true, 'MP3 chargé');
-                    showToast(`Musique « ${file.name} » chargée (sera incluse dans l'export .html) !`);
-                }).catch(() => {
-                    setPlayerUIState(false, 'MP3 prêt');
-                    showToast(`Musique « ${file.name} » prête : cliquez sur Play.`);
-                });
-            };
-            reader.readAsDataURL(file);
+        function setPlayerUIState(playing) {
+            document.getElementById('music-player-box').classList.toggle('is-playing', playing);
         }
 
-        // =========================================================================
-        // 3. GESTION DES BULLES, DE L'ÉDITION ET DE L'EXPORT GITHUB PAGES
-        // =========================================================================
-        const STORAGE_KEY = 'portrait_culturel_5bulles_v5';
-        let savedEdits = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
-        let activeBubbleId = 1;
-        let isEditMode = false;
-
-        document.addEventListener('DOMContentLoaded', () => {
-            applySavedEdits();
+        // Les navigateurs interdisent de lancer un son avant tout geste de l'utilisateur :
+        // on essaie tout de suite, et sinon la musique démarre dès le premier clic, toucher ou touche.
+        function startBackgroundMusic() {
             const bgMusic = document.getElementById('bg-music');
             bgMusic.volume = parseFloat(document.getElementById('music-volume').value || '0.45');
-            // Si la page exportée contient déjà une Data URL audio embarquée
-            if (bgMusic.getAttribute('src') && bgMusic.getAttribute('src').startsWith('data:audio')) {
-                embeddedAudioDataUrl = bgMusic.getAttribute('src');
-            }
-        });
+            const events = ['pointerdown', 'keydown', 'touchstart'];
 
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            setTimeout(() => {
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
-        }
+            const unlock = () => {
+                events.forEach(ev => window.removeEventListener(ev, unlock));
+                bgMusic.play().then(() => setPlayerUIState(true)).catch(() => {});
+            };
 
-        function applySavedEdits() {
-            document.querySelectorAll('[data-editable]').forEach(el => {
-                const key = el.getAttribute('data-editable');
-                if (savedEdits[key] !== undefined) {
-                    el.innerHTML = savedEdits[key];
-                }
+            bgMusic.play().then(() => setPlayerUIState(true)).catch(() => {
+                events.forEach(ev => window.addEventListener(ev, unlock));
             });
         }
 
-        function toggleEditMode() {
-            isEditMode = !isEditMode;
-            const btn = document.getElementById('edit-btn');
-            const label = document.getElementById('edit-btn-label');
+        // =========================================================================
+        // 3. GESTION DES BULLES
+        // =========================================================================
+        let activeBubbleId = 1;
 
-            if (isEditMode) {
-                document.body.classList.add('edit-mode');
-                label.textContent = 'Terminer';
-                btn.classList.remove('bg-white', 'text-slate-700', 'border-slate-300');
-                btn.classList.add('bg-amber-400', 'text-slate-950', 'border-amber-500');
-                enableEditableFields();
-                showToast('Mode Édition activé : cliquez sur un texte pour le modifier.');
-            } else {
-                document.body.classList.remove('edit-mode');
-                label.textContent = 'Mode Édition';
-                btn.classList.add('bg-white', 'text-slate-700', 'border-slate-300');
-                btn.classList.remove('bg-amber-400', 'text-slate-950', 'border-amber-500');
-                disableEditableFields();
-                showToast('Modifications enregistrées !');
-            }
-        }
-
-        function enableEditableFields() {
-            document.querySelectorAll('[data-editable]').forEach(el => {
-                el.setAttribute('contenteditable', 'true');
-                el.oninput = () => {
-                    const key = el.getAttribute('data-editable');
-                    savedEdits[key] = el.innerHTML;
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(savedEdits));
-                };
-            });
-        }
-
-        function disableEditableFields() {
-            document.querySelectorAll('[data-editable]').forEach(el => {
-                el.removeAttribute('contenteditable');
-            });
-        }
+        document.addEventListener('DOMContentLoaded', startBackgroundMusic);
 
         function handleBubbleClick(event, id) {
-            if (isEditMode && event.target.closest('[data-editable]')) {
-                return;
-            }
             expandBubble(id, event.currentTarget);
         }
 
@@ -1908,8 +1574,6 @@
             document.getElementById('fs-prev-label').textContent = bubblesContent[prevId].shortTitle;
             document.getElementById('fs-next-label').textContent = bubblesContent[nextId].shortTitle;
 
-            applySavedEdits();
-            if (isEditMode) enableEditableFields();
         }
 
         function stepBubble(direction) {
@@ -1929,70 +1593,13 @@
 
             if (e.key === 'Escape') {
                 closeBubbleView();
-            } else if (!isEditMode && e.key === 'ArrowRight') {
+            } else if (e.key === 'ArrowRight') {
                 stepBubble(1);
-            } else if (!isEditMode && e.key === 'ArrowLeft') {
+            } else if (e.key === 'ArrowLeft') {
                 stepBubble(-1);
             }
         });
 
-        function downloadStandaloneHTML() {
-            const clone = document.documentElement.cloneNode(true);
-
-            clone.querySelector('body').classList.remove('edit-mode');
-            const fsView = clone.querySelector('#fullscreen-view');
-            if (fsView) fsView.classList.remove('active');
-            const morph = clone.querySelector('#bubble-morph-circle');
-            if (morph) morph.classList.remove('expanding');
-            clone.querySelectorAll('[data-editable]').forEach(el => el.removeAttribute('contenteditable'));
-
-            // Réinitialise l'état visuel du lecteur audio dans l'export
-            const playerBox = clone.querySelector('#music-player-box');
-            if (playerBox) playerBox.classList.remove('is-playing');
-            const playIcon = clone.querySelector('#music-icon-play');
-            if (playIcon) playIcon.classList.remove('hidden');
-            const pauseIcon = clone.querySelector('#music-icon-pause');
-            if (pauseIcon) {
-                pauseIcon.classList.add('hidden');
-                pauseIcon.classList.remove('flex');
-            }
-
-            // Si l'utilisateur a importé un MP3, on l'embarque directement en Data URL
-            const audioEl = clone.querySelector('#bg-music');
-            if (audioEl) {
-                if (embeddedAudioDataUrl) {
-                    audioEl.setAttribute('src', embeddedAudioDataUrl);
-                } else {
-                    audioEl.setAttribute('src', 'musique.mp3');
-                }
-            }
-
-            clone.querySelectorAll('script').forEach(script => {
-                if (script.textContent.includes('let savedEdits =')) {
-                    script.textContent = script.textContent.replace(
-                        /let savedEdits = JSON\.parse\(localStorage\.getItem\(STORAGE_KEY\)\) \|\| \{\};/,
-                        `let savedEdits = ${JSON.stringify(savedEdits)};`
-                    );
-                }
-            });
-
-            const finalHTML = '<!DOCTYPE html>\n' + clone.outerHTML;
-            const blob = new Blob([finalHTML], { type: 'text/html;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'index.html';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-
-            if (embeddedAudioDataUrl) {
-                showToast('index.html téléchargé avec votre musique MP3 embarquée !');
-            } else {
-                showToast('index.html téléchargé (placez musique.mp3 à côté sur GitHub Pages) !');
-            }
-        }
     </script>
 </body>
 </html>
